@@ -3,7 +3,6 @@ package com.lucvs.apex_f1_api.infrastructure.client.openf1.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class OpenF1DriverResponse(
-
     @JsonProperty("meeting_key")
     val meetingKey: Int,
 
@@ -14,29 +13,29 @@ data class OpenF1DriverResponse(
     val driverNumber: Int,
 
     @JsonProperty("broadcast_name")
-    val broadcastName: Int,
+    val broadcastName: String,
 
     @JsonProperty("full_name")
-    val fullName: Int,
+    val fullName: String,
 
     @JsonProperty("name_acronym")
-    val nameAcronym: Int,
+    val nameAcronym: String,
 
     @JsonProperty("team_name")
-    val teamName: Int,
+    val teamName: String?,
 
     @JsonProperty("team_colour")
-    val teamColour: Int,
+    val teamColour: String?,
 
     @JsonProperty("first_name")
-    val firstName: Int,
+    val firstName: String?,
 
     @JsonProperty("last_name")
-    val lastName: Int,
+    val lastName: String?,
 
     @JsonProperty("headshot_url")
-    val headshotUrl: Int,
+    val headshotUrl: String?,
 
     @JsonProperty("country_code")
-    val countryCode: Int
+    val countryCode: String?
 )
