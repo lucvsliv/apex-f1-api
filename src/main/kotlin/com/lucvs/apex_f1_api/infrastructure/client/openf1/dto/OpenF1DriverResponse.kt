@@ -2,6 +2,9 @@ package com.lucvs.apex_f1_api.infrastructure.client.openf1.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
+/**
+ * OpenF1 API 응답 데이터를 매핑하기 위한 DTO
+ */
 data class OpenF1DriverResponse(
     @JsonProperty("meeting_key") val meetingKey: Int,
     @JsonProperty("session_key") val sessionKey: Int,
