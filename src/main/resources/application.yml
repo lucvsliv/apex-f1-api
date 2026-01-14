@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: apex-f1-api
+
+  # Docker 설정
+  docker:
+    compose:
+      enabled: false
+
+  # DB 연결 설정
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:apexf1db}
+    username: ${POSTGRES_USER:f1user}
+    password: ${POSTGRES_PASSWORD:f1password}
+    driver-class-name: org.postgresql.Driver
+
+  # JPA 설정 (Hibernate)
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+  # Spring AI (OpenAI + Vector Store) 설정
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      embedding:
+        options:
+          model: text-embedding-3-small
+
+    vectorstore:
+      pgvector:
+        table-name: vector_store
+        dimensions: 1536
+        distance-type: COSINE_DISTANCE
+        index-type: HNSW
+        initialize-schema: true
+
+# Custom 설정
+openf1:
+  api:
+    url: "https://api.openf1.org/v1"
+
+app:
+  admin:
+    secret-key: "my-super-secret-key"

@@ -33,7 +33,7 @@ dependencies {
 	implementation("org.springframework.ai:spring-ai-starter-model-openai")
 	implementation("org.springframework.ai:spring-ai-starter-vector-store-pgvector")
 
-	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+//	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 	runtimeOnly("org.postgresql:postgresql")
 	developmentOnly("org.springframework.ai:spring-ai-spring-boot-docker-compose")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
