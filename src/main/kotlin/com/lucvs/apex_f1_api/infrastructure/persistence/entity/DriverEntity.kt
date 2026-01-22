@@ -34,4 +34,15 @@ class DriverEntity(
     @Column(columnDefinition = "vector(1536")
     var embedding: List<Double>? = null
 ) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true             // comparing memory address
+        if (other !is DriverEntity) return false    // comparing class type
+
+        return driverNumber == other.driverNumber
+    }
+
+    override fun hashCode(): Int {
+        return driverNumber.hashCode()
+    }
 }
