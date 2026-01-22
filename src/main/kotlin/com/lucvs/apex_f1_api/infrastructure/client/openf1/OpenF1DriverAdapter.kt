@@ -21,12 +21,12 @@ class OpenF1DriverAdapter(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    override fun fetchDrivers(): List<Driver> {
+    override fun loadDrivers(): List<Driver> {
         logger.debug("Fetching drivers from OpenF1 API...")
 
         return try {
             val response = restClient.get()
-                .uri("$apiUrl/drivers")
+                .uri("$apiUrl/drivers?session_key=latest")
                 .retrieve()
                 .body(Array<OpenF1DriverResponse>::class.java) ?: emptyArray()
 
@@ -34,7 +34,7 @@ class OpenF1DriverAdapter(
                 Driver(
                     number = dto.driverNumber,
                     name = dto.fullName,
-                    acronym = dto.nameAcronym,
+                    nameAcronym = dto.nameAcronym,
                     team = dto.teamName ?: "Unknown Team",
                     country = dto.countryCode ?: "Unknown",
                     profileImageUrl = dto.headshotUrl
