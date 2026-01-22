@@ -11,5 +11,5 @@ interface LoadDriverPort {
     /**
      * OpenF1 API - Driver 목록 조회
      */
-    fun fetchDrivers(): List<Driver>
+    fun loadDrivers(): List<Driver>
 }
