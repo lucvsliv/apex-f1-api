@@ -34,10 +34,9 @@ class OpenF1DriverAdapter(
                 Driver(
                     number = dto.driverNumber,
                     name = dto.fullName,
-                    nameAcronym = dto.nameAcronym,
+                    acronym = dto.nameAcronym,
                     team = dto.teamName ?: "Unknown Team",
                     country = dto.countryCode ?: "Unknown",
-                    profileImageUrl = dto.headshotUrl
                 )
             }.distinctBy { it.number }
 
