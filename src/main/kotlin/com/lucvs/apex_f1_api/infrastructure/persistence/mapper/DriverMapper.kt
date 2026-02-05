@@ -3,6 +3,7 @@ package com.lucvs.apex_f1_api.infrastructure.persistence.mapper
 import com.lucvs.apex_f1_api.domain.model.Driver
 import com.lucvs.apex_f1_api.domain.model.DriverSearchResult
 import com.lucvs.apex_f1_api.infrastructure.persistence.entity.DriverEntity
+import com.lucvs.apex_f1_api.infrastructure.persistence.respository.DriverDistanceProjection
 import org.springframework.stereotype.Component
 
 @Component
@@ -28,21 +29,21 @@ class DriverMapper {
             team = driver.team,
             acronym = driver.acronym,
             description = description,
-            embedding = embedding
+            embedding = embedding.map { it.toFloat() }.toFloatArray()
         )
     }
 
     // Native Query Result -> Search Result
-    fun toSearchResult(row: Array<Any>): DriverSearchResult {
-        val entity = row[0] as DriverEntity
-        val distance = row[1] as Double
-
-        // cosine distance -> similarity score
-        val similarityScore = 1 - distance
-
+    fun toSearchResult(projection: DriverDistanceProjection): DriverSearchResult {
         return DriverSearchResult(
-            driver = toDomain(entity),
-            similarityScore = similarityScore
+            driver = Driver(
+                number = projection.number,
+                name = projection.name,
+                country = projection.country,
+                team = projection.team,
+                acronym = projection.acronym
+            ),
+            similarityScore = 1 - projection.distance   // (0~2) -> (-1~1)
         )
     }
 }

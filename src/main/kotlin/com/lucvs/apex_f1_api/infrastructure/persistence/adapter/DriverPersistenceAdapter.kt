@@ -48,19 +48,16 @@ class DriverPersistenceAdapter(
     }
 
     @Transactional(readOnly = true)
-    override fun searchDrivers(
-        query: String,
-        limit: Int
-    ): List<DriverSearchResult> {
+    override fun searchDrivers(query: String, limit: Int): List<DriverSearchResult> {
         // 1. User Query -> Vector
-        val queryVector = embeddingModel.embed(query)
-            .map { it.toDouble() }
+        val queryVector: FloatArray = embeddingModel.embed(query)
 
         // 2. DB Search (run Native Query)
-        val results = driverRepository.searchSimilarDrivers(queryVector, limit)
+        val vectorString = queryVector.contentToString()
+        val results = driverRepository.searchSimilarDrivers(vectorString, limit)
 
-        return results.map { row ->
-            driverMapper.toSearchResult(row)
+        return results.map { projection ->
+            driverMapper.toSearchResult(projection)
         }
     }
 }
