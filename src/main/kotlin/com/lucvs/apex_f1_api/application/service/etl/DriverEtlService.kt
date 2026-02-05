@@ -6,6 +6,7 @@ import com.lucvs.apex_f1_api.domain.model.Driver
 import org.slf4j.LoggerFactory
 import org.springframework.ai.document.Document
 import org.springframework.ai.vectorstore.VectorStore
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 /**
@@ -13,9 +14,8 @@ import org.springframework.stereotype.Service
  */
 @Service
 class DriverEtlService(
-    private val loadDriverPort: LoadDriverPort,
+    @Qualifier("openF1DriverAdapter") private val loadDriverPort: LoadDriverPort,
     private val saveDriverPort: SaveDriverPort,
-    driverPort: SaveDriverPort
 ) : EtlProcessor {
 
     private val logger = LoggerFactory.getLogger(javaClass)
