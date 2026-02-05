@@ -16,7 +16,13 @@ interface DriverRepository : JpaRepository<DriverEntity, Int> {
      */
     @Query(
         value = """
-            SELECT d.*, (d.embedding <=> cast(:vector as vector)) as distance
+            SELECT
+                d.driver_number AS number,
+                d.full_name AS name,
+                d.country_code AS country,
+                d.team_name AS team,
+                d.name_acronym AS acronym,
+                (d.embedding <=> cast(:vector as vector)) as distance
             FROM drivers d
             ORDER BY distance ASC
             LIMIT :limit
@@ -24,7 +30,7 @@ interface DriverRepository : JpaRepository<DriverEntity, Int> {
         nativeQuery = true
     )
     fun searchSimilarDrivers(
-        @Param("vector") vector: List<Double>,
+        @Param("vector") vector: String,
         @Param("limit") limit: Int
-    ) : List<Array<Any>>
+    ) : List<DriverDistanceProjection>
 }

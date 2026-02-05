@@ -1,11 +1,13 @@
 package com.lucvs.apex_f1_api.infrastructure.persistence.entity
 
 import com.lucvs.apex_f1_api.domain.model.Driver
+import com.lucvs.apex_f1_api.infrastructure.persistence.type.VectorType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.annotations.Type
 import org.hibernate.type.SqlTypes
 
 @Entity
@@ -31,9 +33,9 @@ class DriverEntity(
     @Column(columnDefinition = "TEXT")
     val description: String,
 
-    @JdbcTypeCode(SqlTypes.OTHER)
-    @Column(columnDefinition = "vector(1536")
-    var embedding: List<Double>? = null,
+    @Column(columnDefinition = "vector(1536)")
+    @Type(VectorType::class)
+    var embedding: FloatArray? = null,
 ) {
 
     override fun equals(other: Any?): Boolean {
