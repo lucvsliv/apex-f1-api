@@ -35,7 +35,7 @@ class DriverEtlService(
 
         // 2. Transform & Load
         try {
-            saveDriverPort.saveDrivers(drivers)
+            saveDriverPort.saveDrivers(drivers, 2026)
             logger.info("Successfully processed and saved ${drivers.size} drivers.")
         } catch (e: Exception) {
             logger.error("Failed to save drivers", e)

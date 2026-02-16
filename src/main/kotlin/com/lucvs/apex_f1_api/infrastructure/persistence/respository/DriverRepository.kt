@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
-interface DriverRepository : JpaRepository<DriverEntity, Int> {
+interface DriverRepository : JpaRepository<DriverEntity, Long> {
+
+    fun findByNumberAndSeason(number: Int, season: Int): DriverEntity?
 
     /**
      * Driver 유사도 검색 - Cosine Distance

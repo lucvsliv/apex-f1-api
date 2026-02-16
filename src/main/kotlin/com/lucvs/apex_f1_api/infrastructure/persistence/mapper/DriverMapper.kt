@@ -21,15 +21,16 @@ class DriverMapper {
     }
 
     // Domain -> Entity
-    fun toEntity(driver: Driver, embedding: List<Double>, description: String): DriverEntity {
+    fun toEntity(driver: Driver, season: Int, embedding: FloatArray, description: String): DriverEntity {
         return DriverEntity(
             number = driver.number,
+            season = season,
             name = driver.name,
             country = driver.country,
             team = driver.team,
             acronym = driver.acronym,
             description = description,
-            embedding = embedding.map { it.toFloat() }.toFloatArray()
+            embedding = embedding
         )
     }
 

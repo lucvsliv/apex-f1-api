@@ -18,26 +18,41 @@ class DriverPersistenceAdapter(
 ) : SaveDriverPort, LoadDriverPort {
 
     @Transactional
-    override fun saveDrivers(drivers: List<Driver>) {
+    override fun saveDrivers(drivers: List<Driver>, season: Int) {
         drivers.forEach { driver ->
-            // 1. 벡터화할 텍스트 생성
-            val descriptionText = """
-                Formula 1 Driver: ${driver.name} (${driver.acronym}
-                Team: ${driver.team}
-                Country: ${driver.country}
-                Number: ${driver.number}
-            """.trimIndent()
+            // 1. 중복 검사 수행
+            val existingEntity = driverRepository.findByNumberAndSeason(driver.number, season)
 
-            // 2. 텍스트 -> 벡터
-            val vectorValues : List<Double> = embeddingModel.embed(descriptionText)
-                .map { it.toDouble() }
+            // 2. 데이터가 없을 때만 저장 로직 수행
+            if (existingEntity == null) {
 
-            // 3. Entity 매핑
-            val entity = driverMapper.toEntity(driver, vectorValues, descriptionText)
+                // 2-1. 임베딩 텍스트 생성
+                val descriptionText = """
+                    Season": Formula 1 $season Season
+                    Driver Name: ${driver.name} (${driver.acronym})
+                    Team: ${driver.team}
+                    Nationality: ${driver.country}
+                    Number: ${driver.number}
+                """.trimIndent()
 
-            // 4. 저장
-            // TODO: 이미 존재하는 데이터에 대한 처리 로직 추가 필요
-            driverRepository.save(entity)
+                // 2-2. 임베딩 벡터 생성
+                val vectorValues = embeddingModel.embed(descriptionText)
+
+                // 3. 엔티티 변환 및 저장
+                val newEntity = driverMapper.toEntity(
+                    driver = driver,
+                    season = season,
+                    embedding = vectorValues,
+                    description = descriptionText
+                )
+
+                driverRepository.save(newEntity)
+
+                // 4. 로깅
+                println("Saved new driver: ${driver.name} ($season)")
+            } else {
+                println("Skipped existing driver: ${driver.name}")
+            }
         }
     }
 
