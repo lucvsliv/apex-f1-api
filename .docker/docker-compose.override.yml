@@ -1,0 +1,10 @@
+services:
+  apex-f1-postgres:
+    container_name: apex-f1-postgres
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

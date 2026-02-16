@@ -1,0 +1,7 @@
+services:
+  apex-f1-postgres:
+    container_name: apex-f1-postgres-test
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
