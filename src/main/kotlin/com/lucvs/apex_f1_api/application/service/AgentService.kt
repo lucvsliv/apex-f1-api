@@ -15,6 +15,7 @@ class AgentService(
         // 1. Vector DB 검색 (현재 드라이버 정보 위주)
         val contexts = searchVectorPort.searchSimilarContext(message)
         val contextString = contexts.joinToString("\n")
+        println(contextString)
 
         // 2. 검색된 컨텍스트와 시스템 지시사항을 합쳐 프롬프트 생성
         val prompt = buildPrompt(message, contextString)

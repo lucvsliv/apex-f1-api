@@ -40,13 +40,6 @@ class DriverEntity(
 
     @Column(name = "name_acronym")
     val acronym: String,
-
-    @Column(columnDefinition = "TEXT")
-    val description: String,
-
-    @Column(columnDefinition = "vector(1536)")
-    @Type(VectorType::class)
-    var embedding: FloatArray? = null,
 ) {
 
     override fun equals(other: Any?): Boolean {

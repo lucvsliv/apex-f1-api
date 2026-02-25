@@ -2,7 +2,6 @@ package com.lucvs.apex_f1_api.infrastructure.client.openf1
 
 import com.lucvs.apex_f1_api.application.port.out.LoadDriverPort
 import com.lucvs.apex_f1_api.domain.model.Driver
-import com.lucvs.apex_f1_api.domain.model.DriverSearchResult
 import com.lucvs.apex_f1_api.infrastructure.client.openf1.dto.OpenF1DriverResponse
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -45,12 +44,5 @@ class OpenF1DriverAdapter(
             logger.error("Failed to fetch drivers from OpenF1 API", e)
             emptyList()
         }
-    }
-
-    override fun searchDrivers(
-        query: String,
-        limit: Int
-    ): List<DriverSearchResult> {
-        TODO("Not yet implemented")
     }
 }
