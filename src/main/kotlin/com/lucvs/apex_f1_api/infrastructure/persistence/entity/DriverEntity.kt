@@ -1,14 +1,6 @@
 package com.lucvs.apex_f1_api.infrastructure.persistence.entity
 
-import com.lucvs.apex_f1_api.infrastructure.persistence.type.VectorType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
-import org.hibernate.annotations.Type
+import jakarta.persistence.*
 
 @Entity
 @Table(
