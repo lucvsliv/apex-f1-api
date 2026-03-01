@@ -33,7 +33,6 @@ dependencies {
 	implementation("org.springframework.ai:spring-ai-starter-model-openai")
 	implementation("org.springframework.ai:spring-ai-starter-vector-store-pgvector")
 
-//	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 	runtimeOnly("org.postgresql:postgresql")
 	developmentOnly("org.springframework.ai:spring-ai-spring-boot-docker-compose")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -42,6 +41,14 @@ dependencies {
 
 	// postgres - vector/json
 	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.7.3")
+
+	// spring security
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
+	// jwt
+	implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 }
 
 dependencyManagement {
