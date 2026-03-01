@@ -47,3 +47,9 @@ openf1:
 app:
   admin:
     secret-key: "my-super-secret-key"
+
+jwt:
+  # ENV로 변경 필요
+  secret: "ApexFormulaOneSecretKeyForJwtAuthenticationMustBeLongerThan32Bytes"
+  access-token-expiration: 1800000 # 30분 (밀리초)
+  refresh-token-expiration: 1209600000 # 14일 (밀리초)
