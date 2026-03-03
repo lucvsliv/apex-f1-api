@@ -6,5 +6,6 @@ data class User(
     val providerId: String,
     val email: String?,
     val nickname: String,
+    val profileImageUrl: String? = null,
     val role: Role = Role.ROLE_USER
 )
