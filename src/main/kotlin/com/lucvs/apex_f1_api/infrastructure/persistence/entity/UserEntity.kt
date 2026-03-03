@@ -24,8 +24,11 @@ class UserEntity(
     @Column(name = "provider_id", nullable = false)
     val providerId: String,
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = true)
     val email: String?,
+
+    @Column(name = "profile_image_url", nullable = true)
+    val profileImageUrl: String? = null,
 
     @Column(name = "nickname", nullable = false)
     val nickname: String,

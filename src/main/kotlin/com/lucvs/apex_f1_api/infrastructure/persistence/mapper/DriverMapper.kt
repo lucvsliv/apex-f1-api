@@ -10,10 +10,10 @@ class DriverMapper {
     // Entity -> Domain
     fun toDomain(entity: DriverEntity): Driver {
         return Driver(
-            number = entity.number,
-            name = entity.name,
+            number  = entity.number,
+            name    = entity.name,
             country = entity.country,
-            team = entity.team,
+            team    = entity.team,
             acronym = entity.acronym
         )
     }
@@ -21,11 +21,11 @@ class DriverMapper {
     // Domain -> Entity
     fun toEntity(driver: Driver, season: Int): DriverEntity {
         return DriverEntity(
-            number = driver.number,
-            season = season,
-            name = driver.name,
+            number  = driver.number,
+            season  = season,
+            name    = driver.name,
             country = driver.country,
-            team = driver.team,
+            team    = driver.team,
             acronym = driver.acronym
         )
     }

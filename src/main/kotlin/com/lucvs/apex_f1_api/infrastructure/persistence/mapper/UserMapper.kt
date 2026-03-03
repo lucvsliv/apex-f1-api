@@ -9,23 +9,25 @@ class UserMapper {
 
     fun toDomain(entity: UserEntity): User {
         return User(
-            id = entity.id,
-            provider = entity.provider,
-            providerId = entity.providerId,
-            email = entity.email,
-            nickname = entity.nickname,
-            role = entity.role
+            id              = entity.id,
+            provider        = entity.provider,
+            providerId      = entity.providerId,
+            email           = entity.email,
+            nickname        = entity.nickname,
+            profileImageUrl = entity.profileImageUrl,
+            role            = entity.role
         )
     }
 
-    fun toEntity(user: User): UserEntity {
+    fun toEntity(domain: User): UserEntity {
         return UserEntity(
-            id = user.id,
-            provider = user.provider,
-            providerId = user.providerId,
-            email = user.email,
-            nickname = user.nickname,
-            role = user.role
+            id              = domain.id,
+            provider        = domain.provider,
+            providerId      = domain.providerId,
+            email           = domain.email,
+            nickname        = domain.nickname,
+            profileImageUrl = domain.profileImageUrl,
+            role            = domain.role
         )
     }
 }
