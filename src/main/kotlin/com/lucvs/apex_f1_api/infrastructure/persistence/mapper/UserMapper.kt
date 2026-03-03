@@ -13,6 +13,7 @@ class UserMapper {
             provider        = entity.provider,
             providerId      = entity.providerId,
             email           = entity.email,
+            password        = entity.password,
             nickname        = entity.nickname,
             profileImageUrl = entity.profileImageUrl,
             role            = entity.role
@@ -25,6 +26,7 @@ class UserMapper {
             provider        = domain.provider,
             providerId      = domain.providerId,
             email           = domain.email,
+            password        = domain.password,
             nickname        = domain.nickname,
             profileImageUrl = domain.profileImageUrl,
             role            = domain.role

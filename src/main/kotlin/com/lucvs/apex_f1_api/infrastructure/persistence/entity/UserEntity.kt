@@ -27,6 +27,9 @@ class UserEntity(
     @Column(name = "email", nullable = true)
     val email: String?,
 
+    @Column(name = "password", nullable = true)
+    val password: String? = null,
+
     @Column(name = "profile_image_url", nullable = true)
     val profileImageUrl: String? = null,
 

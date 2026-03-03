@@ -1,11 +1,16 @@
 package com.lucvs.apex_f1_api.application.service
 
+import com.lucvs.apex_f1_api.application.port.`in`.SignUpUseCase
+import com.lucvs.apex_f1_api.application.port.`in`.SocialLoginUseCase
 import com.lucvs.apex_f1_api.application.port.out.LoadSocialUserPort
+import com.lucvs.apex_f1_api.application.port.out.ManageUserPort
 import com.lucvs.apex_f1_api.domain.model.AuthProvider
 import com.lucvs.apex_f1_api.domain.model.User
+import com.lucvs.apex_f1_api.infrastructure.api.dto.SignUpRequest
 import com.lucvs.apex_f1_api.infrastructure.persistence.mapper.UserMapper
 import com.lucvs.apex_f1_api.infrastructure.persistence.respository.UserRepository
 import com.lucvs.apex_f1_api.infrastructure.security.JwtProvider
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -14,16 +19,20 @@ class AuthService(
     private val socialLoadPorts: List<LoadSocialUserPort>,
     private val userRepository: UserRepository,
     private val userMapper: UserMapper,
-    private val jwtProvider: JwtProvider
-) {
+    private val jwtProvider: JwtProvider,
+    private val manageUserPort: ManageUserPort,
+    private val passwordEncoder: PasswordEncoder
+) : SignUpUseCase, SocialLoginUseCase {
 
+    /**
+     * 소셜 로그인
+     */
     @Transactional
-    fun socialLogin(provider: AuthProvider, accessToken: String): String {
+    override fun socialLogin(provider: AuthProvider, accessToken: String): String {
         val loader = socialLoadPorts.find { it.supports(provider) }
             ?: throw IllegalArgumentException("지원하지 않는 소셜 로그인입니다: $provider")
 
         val socialUser = loader.loadUser(accessToken)
-
         val existingEntity = userRepository.findByProviderAndProviderId(socialUser.provider, socialUser.providerId)
 
         val userEntity = if (existingEntity != null) {
@@ -41,5 +50,31 @@ class AuthService(
         val domainUser = userMapper.toDomain(userEntity)
 
         return jwtProvider.generateAccessToken(domainUser.id!!, domainUser.role.name)
+    }
+
+    /**
+     * 일반 회원가입
+     */
+    @Transactional
+    override fun signUp(request: SignUpRequest) {
+        // 1. 중복 검사
+        if (manageUserPort.existsByEmail(request.email)) { throw IllegalArgumentException("이미 사용 중인 이메일입니다.") }
+        if (manageUserPort.existsByNickname(request.nickname)) { throw IllegalArgumentException("이미 사용 중인 닉네임입니다. ") }
+
+        // 2. 비밀번호 암호화
+        val encodedPassword = passwordEncoder.encode(request.password)
+
+        // 3. 도메인 객체 생성 (일반 회원가입, provider: LOCAL)
+        val newUser = User(
+            provider = AuthProvider.LOCAL,
+            providerId = request.email,
+            email = request.email,
+            password = encodedPassword,
+            nickname = request.nickname,
+            profileImageUrl = request.profileImageUrl
+        )
+
+        // 4. DB 저장
+        manageUserPort.saveUser(newUser)
     }
 }
