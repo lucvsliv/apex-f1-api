@@ -1,5 +1,6 @@
 package com.lucvs.apex_f1_api.infrastructure.api
 
+import com.lucvs.apex_f1_api.application.port.`in`.CheckNicknameUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.LoginUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SignUpUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SocialLoginUseCase
@@ -11,9 +12,11 @@ import com.lucvs.apex_f1_api.infrastructure.api.dto.SocialLoginRequest
 import org.apache.coyote.Response
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -22,7 +25,7 @@ class AuthController(
     private val signUpUseCase: SignUpUseCase,
     private val socialLoginUseCase: SocialLoginUseCase,
     private val loginUseCase: LoginUseCase,
-    useCase: LoginUseCase
+    private val checkNicknameUseCase: CheckNicknameUseCase,
 ) {
 
     @PostMapping("/signup")
@@ -60,6 +63,16 @@ class AuthController(
             } else {
                 ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.message)  // 401
             }
+        }
+    }
+
+    @GetMapping("/check-nickname")
+    fun checkNickname(@RequestParam nickname: String): ResponseEntity<String> {
+        return try {
+            checkNicknameUseCase.checkNickname(nickname)
+            ResponseEntity.ok("사용 가능한 닉네임입니다.")
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)
         }
     }
 }

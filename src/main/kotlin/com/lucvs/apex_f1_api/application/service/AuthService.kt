@@ -1,5 +1,6 @@
 package com.lucvs.apex_f1_api.application.service
 
+import com.lucvs.apex_f1_api.application.port.`in`.CheckNicknameUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.LoginUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SignUpUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SocialLoginUseCase
@@ -26,7 +27,7 @@ class AuthService(
     private val manageUserPort: ManageUserPort,
     private val passwordEncoder: PasswordEncoder,
     private val loadUserPort: LoadUserPort
-) : SignUpUseCase, SocialLoginUseCase, LoginUseCase {
+) : SignUpUseCase, SocialLoginUseCase, LoginUseCase, CheckNicknameUseCase {
 
     /**
      * 소셜 로그인
@@ -103,5 +104,15 @@ class AuthService(
 
         // 4. 검증 성공 시 JWT 토큰 발급
         return jwtProvider.generateAccessToken(user.id!!, user.role.name)
+    }
+
+    /**
+     * 닉네임 중복 검사
+     */
+    @Transactional(readOnly = true)
+    override fun checkNickname(nickname: String) {
+        if (manageUserPort.existsByNickname(nickname)) {
+            throw IllegalArgumentException("이미 사용 중인 닉네임입니다.")
+        }
     }
 }
