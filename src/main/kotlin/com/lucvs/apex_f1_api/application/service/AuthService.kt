@@ -1,11 +1,14 @@
 package com.lucvs.apex_f1_api.application.service
 
+import com.lucvs.apex_f1_api.application.port.`in`.LoginUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SignUpUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SocialLoginUseCase
 import com.lucvs.apex_f1_api.application.port.out.LoadSocialUserPort
+import com.lucvs.apex_f1_api.application.port.out.LoadUserPort
 import com.lucvs.apex_f1_api.application.port.out.ManageUserPort
 import com.lucvs.apex_f1_api.domain.model.AuthProvider
 import com.lucvs.apex_f1_api.domain.model.User
+import com.lucvs.apex_f1_api.infrastructure.api.dto.LoginRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SignUpRequest
 import com.lucvs.apex_f1_api.infrastructure.persistence.mapper.UserMapper
 import com.lucvs.apex_f1_api.infrastructure.persistence.respository.UserRepository
@@ -21,8 +24,9 @@ class AuthService(
     private val userMapper: UserMapper,
     private val jwtProvider: JwtProvider,
     private val manageUserPort: ManageUserPort,
-    private val passwordEncoder: PasswordEncoder
-) : SignUpUseCase, SocialLoginUseCase {
+    private val passwordEncoder: PasswordEncoder,
+    private val loadUserPort: LoadUserPort
+) : SignUpUseCase, SocialLoginUseCase, LoginUseCase {
 
     /**
      * 소셜 로그인
@@ -76,5 +80,28 @@ class AuthService(
 
         // 4. DB 저장
         manageUserPort.saveUser(newUser)
+    }
+
+    /**
+     * 일반 로그인 (로그인)
+     */
+    @Transactional(readOnly = true)
+    override fun login(request: LoginRequest): String {
+        // 1. 이메일로 유저 검색
+        val user = loadUserPort.loadUserByEmail(request.email)
+            ?: throw IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.")
+
+        // 2. 소셜 가입 유저 방어 로직
+        if (user.password == null) {
+            throw IllegalArgumentException("소셜 로그인으로 가입된 계정입니다.")
+        }
+
+        // 3. 비밀번호 검증
+        if (!passwordEncoder.matches(request.password, user.password)) {
+            throw IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.")
+        }
+
+        // 4. 검증 성공 시 JWT 토큰 발급
+        return jwtProvider.generateAccessToken(user.id!!, user.role.name)
     }
 }
