@@ -19,6 +19,11 @@ class UserPersistenceAdapter(
         return userEntity?.let { userMapper.toDomain(it) }
     }
 
+    override fun loadUserByEmail(email: String): User? {
+        val userEntity = userRepository.findByEmail(email)
+        return userEntity?.let { userMapper.toDomain(it) }
+    }
+
     override fun saveUser(user: User): User {
         val entity = userMapper.toEntity(user)
         val savedEntity = userRepository.save(entity)

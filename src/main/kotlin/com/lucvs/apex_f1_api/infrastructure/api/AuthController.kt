@@ -1,11 +1,14 @@
 package com.lucvs.apex_f1_api.infrastructure.api
 
+import com.lucvs.apex_f1_api.application.port.`in`.LoginUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SignUpUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SocialLoginUseCase
 import com.lucvs.apex_f1_api.domain.model.AuthProvider
 import com.lucvs.apex_f1_api.infrastructure.api.dto.AuthResponse
+import com.lucvs.apex_f1_api.infrastructure.api.dto.LoginRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SignUpRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SocialLoginRequest
+import org.apache.coyote.Response
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1/auth")
 class AuthController(
+    private val signUpUseCase: SignUpUseCase,
     private val socialLoginUseCase: SocialLoginUseCase,
-    private val signUpUseCase: SignUpUseCase
+    private val loginUseCase: LoginUseCase,
+    useCase: LoginUseCase
 ) {
 
     @PostMapping("/signup")
@@ -42,5 +47,19 @@ class AuthController(
         val jwtToken = socialLoginUseCase.socialLogin(provider, request.accessToken)
 
         return ResponseEntity.ok(AuthResponse(jwtToken))
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody request: LoginRequest): ResponseEntity<Any> {
+        return try {
+            val jwtToken = loginUseCase.login(request)
+            ResponseEntity.ok(AuthResponse(jwtToken))
+        } catch (e: IllegalArgumentException) {
+            if (e.message?.contains("소셜") == true) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)   // 400
+            } else {
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.message)  // 401
+            }
+        }
     }
 }
