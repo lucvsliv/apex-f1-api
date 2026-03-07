@@ -8,5 +8,6 @@ data class User(
     val password: String? = null,
     val nickname: String,
     val profileImageUrl: String? = null,
-    val role: Role = Role.ROLE_USER
+    val role: Role = Role.ROLE_USER,
+    val tier: MembershipTier = MembershipTier.ROOKIE    // 신규 가입자 -> ROOKIE
 )

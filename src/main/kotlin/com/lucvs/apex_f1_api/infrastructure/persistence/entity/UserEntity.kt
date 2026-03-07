@@ -1,6 +1,7 @@
 package com.lucvs.apex_f1_api.infrastructure.persistence.entity
 
 import com.lucvs.apex_f1_api.domain.model.AuthProvider
+import com.lucvs.apex_f1_api.domain.model.MembershipTier
 import com.lucvs.apex_f1_api.domain.model.Role
 import jakarta.persistence.*
 
@@ -38,5 +39,9 @@ class UserEntity(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    val role: Role
+    val role: Role,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tier", nullable = false)
+    var tier: MembershipTier = MembershipTier.ROOKIE
 )
