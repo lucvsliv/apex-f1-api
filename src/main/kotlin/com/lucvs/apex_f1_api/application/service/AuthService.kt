@@ -12,7 +12,7 @@ import com.lucvs.apex_f1_api.domain.model.User
 import com.lucvs.apex_f1_api.infrastructure.api.dto.LoginRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SignUpRequest
 import com.lucvs.apex_f1_api.infrastructure.persistence.mapper.UserMapper
-import com.lucvs.apex_f1_api.infrastructure.persistence.respository.UserRepository
+import com.lucvs.apex_f1_api.infrastructure.persistence.repository.UserRepository
 import com.lucvs.apex_f1_api.infrastructure.security.JwtProvider
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service

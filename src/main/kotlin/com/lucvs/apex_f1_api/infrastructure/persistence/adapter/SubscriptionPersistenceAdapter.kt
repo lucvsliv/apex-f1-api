@@ -4,7 +4,7 @@ import com.lucvs.apex_f1_api.application.port.out.LoadSubscriptionPort
 import com.lucvs.apex_f1_api.application.port.out.SaveSubscriptionPort
 import com.lucvs.apex_f1_api.domain.model.Subscription
 import com.lucvs.apex_f1_api.infrastructure.persistence.mapper.SubscriptionMapper
-import com.lucvs.apex_f1_api.infrastructure.persistence.respository.SubscriptionRepository
+import com.lucvs.apex_f1_api.infrastructure.persistence.repository.SubscriptionRepository
 import org.springframework.stereotype.Component
 
 @Component

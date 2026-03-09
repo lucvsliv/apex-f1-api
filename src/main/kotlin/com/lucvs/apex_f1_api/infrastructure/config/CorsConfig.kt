@@ -1,4 +1,4 @@
-package com.lucvs.apex_f1_api.config
+package com.lucvs.apex_f1_api.infrastructure.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
