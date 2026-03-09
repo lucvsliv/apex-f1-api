@@ -12,7 +12,7 @@ class SubscriptionEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     val userId: Long,
 
     @Enumerated(EnumType.STRING)
@@ -28,4 +28,11 @@ class SubscriptionEntity(
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     var status: SubscriptionStatus
-)
+) {
+    fun update(tier: MembershipTier, billingKey: String?, nextBillingDate: LocalDateTime, status: SubscriptionStatus) {
+        this.tier = tier
+        this.billingKey = billingKey
+        this.nextBillingDate = nextBillingDate
+        this.status = status
+    }
+}

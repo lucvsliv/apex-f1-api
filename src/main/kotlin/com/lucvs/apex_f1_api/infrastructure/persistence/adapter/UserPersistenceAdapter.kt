@@ -37,5 +37,4 @@ class UserPersistenceAdapter(
     override fun existsByNickname(nickname: String): Boolean {
         return userRepository.existsByNickname(nickname)
     }
-
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component
 @Component
 class DriverMapper {
 
-    // Entity -> Domain
     fun toDomain(entity: DriverEntity): Driver {
         return Driver(
             number  = entity.number,
@@ -18,7 +17,6 @@ class DriverMapper {
         )
     }
 
-    // Domain -> Entity
     fun toEntity(driver: Driver, season: Int): DriverEntity {
         return DriverEntity(
             number  = driver.number,

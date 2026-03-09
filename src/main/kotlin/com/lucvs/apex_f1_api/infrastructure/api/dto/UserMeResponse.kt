@@ -8,7 +8,8 @@ data class UserMeResponse(
     val email: String,
     val nickname: String,
     val profileImageUrl: String?,
-    val role: String
+    val role: String,
+    val tier: String
 ) {
     companion object {
         fun from(user: User): UserMeResponse {
@@ -18,7 +19,8 @@ data class UserMeResponse(
                 email = user.email ?: "이메일 미제공",
                 nickname = user.nickname,
                 profileImageUrl = user.profileImageUrl,
-                role = user.role.name
+                role = user.role.name,
+                tier = user.tier.name
             )
         }
     }
