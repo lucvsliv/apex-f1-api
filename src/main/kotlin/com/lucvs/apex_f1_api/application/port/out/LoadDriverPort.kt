@@ -7,7 +7,6 @@ import com.lucvs.apex_f1_api.domain.model.Driver
  * - DIP
  */
 interface LoadDriverPort {
-
     /**
      * OpenF1 API - Driver 목록 조회
      */

@@ -4,7 +4,7 @@ import com.lucvs.apex_f1_api.application.port.out.LoadDriverPort
 import com.lucvs.apex_f1_api.application.port.out.SaveDriverPort
 import com.lucvs.apex_f1_api.domain.model.Driver
 import com.lucvs.apex_f1_api.infrastructure.persistence.mapper.DriverMapper
-import com.lucvs.apex_f1_api.infrastructure.persistence.respository.DriverRepository
+import com.lucvs.apex_f1_api.infrastructure.persistence.repository.DriverRepository
 import org.springframework.ai.document.Document
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore
 import org.springframework.stereotype.Component
@@ -18,7 +18,7 @@ class DriverPersistenceAdapter(
 ) : SaveDriverPort, LoadDriverPort {
 
     @Transactional
-    override fun saveDrivers(drivers: List<Driver>, season: Int) {
+    override fun save(drivers: List<Driver>, season: Int) {
 
         val newDocuments = mutableListOf<Document>()
 

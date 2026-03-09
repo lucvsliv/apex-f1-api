@@ -11,7 +11,7 @@ class SpringAiAdapter(
 
     private val chatClient = chatClientBuilder.build()
 
-    override fun generateResponse(prompt: String): String {
+    override fun generate(prompt: String): String {
         return chatClient.prompt()
             .user(prompt)
             .call()

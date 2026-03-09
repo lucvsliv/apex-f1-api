@@ -1,4 +1,4 @@
-package com.lucvs.apex_f1_api.infrastructure.api
+package com.lucvs.apex_f1_api.infrastructure.api.controller
 
 import com.lucvs.apex_f1_api.application.port.`in`.CheckNicknameUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.LoginUseCase
@@ -9,7 +9,6 @@ import com.lucvs.apex_f1_api.infrastructure.api.dto.AuthResponse
 import com.lucvs.apex_f1_api.infrastructure.api.dto.LoginRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SignUpRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SocialLoginRequest
-import org.apache.coyote.Response
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

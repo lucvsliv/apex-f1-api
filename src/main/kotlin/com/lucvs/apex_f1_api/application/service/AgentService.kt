@@ -21,7 +21,7 @@ class AgentService(
         val prompt = buildPrompt(message, contextString)
 
         // 3. LLM 호출 및 응답 반환
-        return generateLlmResponsePort.generateResponse(prompt)
+        return generateLlmResponsePort.generate(prompt)
     }
 
     private fun buildPrompt(userMessage: String, contextString: String): String {

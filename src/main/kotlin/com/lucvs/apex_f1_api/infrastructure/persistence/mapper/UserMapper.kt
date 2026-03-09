@@ -16,7 +16,8 @@ class UserMapper {
             password        = entity.password,
             nickname        = entity.nickname,
             profileImageUrl = entity.profileImageUrl,
-            role            = entity.role
+            role            = entity.role,
+            tier            = entity.tier
         )
     }
 
@@ -29,7 +30,8 @@ class UserMapper {
             password        = domain.password,
             nickname        = domain.nickname,
             profileImageUrl = domain.profileImageUrl,
-            role            = domain.role
+            role            = domain.role,
+            tier            = domain.tier
         )
     }
 }
