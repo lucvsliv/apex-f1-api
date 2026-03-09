@@ -1,4 +1,4 @@
-package com.lucvs.apex_f1_api.infrastructure.persistence.respository
+package com.lucvs.apex_f1_api.infrastructure.persistence.repository
 
 import com.lucvs.apex_f1_api.domain.model.AuthProvider
 import com.lucvs.apex_f1_api.infrastructure.persistence.entity.UserEntity

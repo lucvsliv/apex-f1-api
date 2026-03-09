@@ -3,7 +3,7 @@ package com.lucvs.apex_f1_api.infrastructure.persistence.adapter
 import com.lucvs.apex_f1_api.application.port.out.RecordSubscriptionHistoryPort
 import com.lucvs.apex_f1_api.domain.model.SubscriptionHistory
 import com.lucvs.apex_f1_api.infrastructure.persistence.mapper.SubscriptionHistoryMapper
-import com.lucvs.apex_f1_api.infrastructure.persistence.respository.SubscriptionHistoryRepository
+import com.lucvs.apex_f1_api.infrastructure.persistence.repository.SubscriptionHistoryRepository
 import org.springframework.stereotype.Component
 
 @Component

@@ -1,5 +1,7 @@
-package com.lucvs.apex_f1_api.infrastructure.security
+package com.lucvs.apex_f1_api.infrastructure.config
 
+import com.lucvs.apex_f1_api.infrastructure.security.JwtAuthenticationFilter
+import com.lucvs.apex_f1_api.infrastructure.security.JwtProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

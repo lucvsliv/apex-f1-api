@@ -1,4 +1,4 @@
-package com.lucvs.apex_f1_api.infrastructure.api
+package com.lucvs.apex_f1_api.infrastructure.api.controller
 
 import com.lucvs.apex_f1_api.application.port.`in`.ChatWithAgentUseCase
 import com.lucvs.apex_f1_api.infrastructure.api.dto.ChatRequest

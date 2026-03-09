@@ -4,7 +4,7 @@ import com.lucvs.apex_f1_api.application.port.out.LoadUserPort
 import com.lucvs.apex_f1_api.application.port.out.SaveUserPort
 import com.lucvs.apex_f1_api.domain.model.User
 import com.lucvs.apex_f1_api.infrastructure.persistence.mapper.UserMapper
-import com.lucvs.apex_f1_api.infrastructure.persistence.respository.UserRepository
+import com.lucvs.apex_f1_api.infrastructure.persistence.repository.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 

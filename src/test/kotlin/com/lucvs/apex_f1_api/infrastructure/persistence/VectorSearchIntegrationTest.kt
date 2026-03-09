@@ -2,7 +2,8 @@ package com.lucvs.apex_f1_api.infrastructure.persistence
 
 import com.lucvs.apex_f1_api.domain.model.Driver
 import com.lucvs.apex_f1_api.infrastructure.persistence.adapter.DriverPersistenceAdapter
-import com.lucvs.apex_f1_api.infrastructure.persistence.respository.DriverRepository
+import com.lucvs.apex_f1_api.infrastructure.persistence.adapter.VectorSearchAdapter
+import com.lucvs.apex_f1_api.infrastructure.persistence.repository.DriverRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,6 +17,9 @@ class VectorSearchIntegrationTest {
 
     @Autowired
     lateinit var driverPersistenceAdapter: DriverPersistenceAdapter
+
+    @Autowired
+    lateinit var vectorSearchAdapter: VectorSearchAdapter
 
     @Autowired
     lateinit var driverRepository: DriverRepository // 데이터 초기화를 위해 필요
@@ -43,13 +47,13 @@ class VectorSearchIntegrationTest {
         )
 
         // 2026년 시즌으로 저장
-        driverPersistenceAdapter.saveDrivers(drivers, 2026)
+        driverPersistenceAdapter.save(drivers, 2026)
 
         // ==========================================
         // 2. When: 검색 실행
         // ==========================================
         val query = "Who are the drivers from Ferrari in season 2026?"
-        val results = driverPersistenceAdapter.searchDrivers(query, 5)
+        val results = vectorSearchAdapter.searchSimilarContext(query, 5)
 
         // ==========================================
         // 3. Then: 검증
@@ -58,13 +62,15 @@ class VectorSearchIntegrationTest {
 
         println("[*] 검색 결과 (Top 5) ===")
         results.forEachIndexed { index, it ->
-            println("${index + 1}. [${it.driver.team}] ${it.driver.name} (유사도: ${String.format("%.4f", it.similarityScore)})")
+            println("[*] 검색 결과 (Top 5) ===")
+            results.forEachIndexed { index, it ->
+                println("${index + 1}. $it")
+            }
         }
 
         // [검증 1] 상위 2명은 무조건 Ferrari여야 함
-        val top2Teams = results.take(2).map { it.driver.team }
-        assertThat(top2Teams)
-            .describedAs("상위 1, 2등은 Ferrari 팀이어야 합니다.")
+        val top2 = results.take(2)
+        assertThat(top2)
             .allMatch { it.contains("Ferrari", ignoreCase = true) }
     }
 }
