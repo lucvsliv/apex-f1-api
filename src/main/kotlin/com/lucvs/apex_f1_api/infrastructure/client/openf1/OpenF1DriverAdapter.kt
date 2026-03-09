@@ -26,7 +26,7 @@ class OpenF1DriverAdapter(
 
         return try {
             val response = restClient.get()
-                .uri("$apiUrl/drivers?session_key=latest")
+                .uri("$apiUrl/drivers?session_key=11230")
                 .retrieve()
                 .body(Array<OpenF1DriverResponse>::class.java) ?: emptyArray()
 

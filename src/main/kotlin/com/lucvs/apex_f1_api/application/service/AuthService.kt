@@ -6,7 +6,7 @@ import com.lucvs.apex_f1_api.application.port.`in`.SignUpUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SocialLoginUseCase
 import com.lucvs.apex_f1_api.application.port.out.LoadSocialUserPort
 import com.lucvs.apex_f1_api.application.port.out.LoadUserPort
-import com.lucvs.apex_f1_api.application.port.out.ManageUserPort
+import com.lucvs.apex_f1_api.application.port.out.SaveUserPort
 import com.lucvs.apex_f1_api.domain.model.AuthProvider
 import com.lucvs.apex_f1_api.domain.model.User
 import com.lucvs.apex_f1_api.infrastructure.api.dto.LoginRequest
@@ -24,7 +24,7 @@ class AuthService(
     private val userRepository: UserRepository,
     private val userMapper: UserMapper,
     private val jwtProvider: JwtProvider,
-    private val manageUserPort: ManageUserPort,
+    private val saveUserPort: SaveUserPort,
     private val passwordEncoder: PasswordEncoder,
     private val loadUserPort: LoadUserPort
 ) : SignUpUseCase, SocialLoginUseCase, LoginUseCase, CheckNicknameUseCase {
@@ -63,8 +63,8 @@ class AuthService(
     @Transactional
     override fun signUp(request: SignUpRequest) {
         // 1. 중복 검사
-        if (manageUserPort.existsByEmail(request.email)) { throw IllegalArgumentException("이미 사용 중인 이메일입니다.") }
-        if (manageUserPort.existsByNickname(request.nickname)) { throw IllegalArgumentException("이미 사용 중인 닉네임입니다. ") }
+        if (loadUserPort.existsByEmail(request.email)) { throw IllegalArgumentException("이미 사용 중인 이메일입니다.") }
+        if (loadUserPort.existsByNickname(request.nickname)) { throw IllegalArgumentException("이미 사용 중인 닉네임입니다. ") }
 
         // 2. 비밀번호 암호화
         val encodedPassword = passwordEncoder.encode(request.password)
@@ -80,7 +80,7 @@ class AuthService(
         )
 
         // 4. DB 저장
-        manageUserPort.saveUser(newUser)
+        saveUserPort.save(newUser)
     }
 
     /**
@@ -111,7 +111,7 @@ class AuthService(
      */
     @Transactional(readOnly = true)
     override fun checkNickname(nickname: String) {
-        if (manageUserPort.existsByNickname(nickname)) {
+        if (loadUserPort.existsByNickname(nickname)) {
             throw IllegalArgumentException("이미 사용 중인 닉네임입니다.")
         }
     }

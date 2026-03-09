@@ -18,7 +18,7 @@ class DriverPersistenceAdapter(
 ) : SaveDriverPort, LoadDriverPort {
 
     @Transactional
-    override fun saveDrivers(drivers: List<Driver>, season: Int) {
+    override fun save(drivers: List<Driver>, season: Int) {
 
         val newDocuments = mutableListOf<Document>()
 

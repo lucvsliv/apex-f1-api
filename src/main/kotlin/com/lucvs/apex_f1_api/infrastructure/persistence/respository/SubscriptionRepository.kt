@@ -5,6 +5,6 @@ import com.lucvs.apex_f1_api.infrastructure.persistence.entity.SubscriptionEntit
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface SubscriptionRepository : JpaRepository<SubscriptionEntity, Long> {
-
+    fun findByUserId(userId: Long): SubscriptionEntity?
     fun findByUserIdAndStatus(userId: Long, status: SubscriptionStatus): SubscriptionEntity?
 }
