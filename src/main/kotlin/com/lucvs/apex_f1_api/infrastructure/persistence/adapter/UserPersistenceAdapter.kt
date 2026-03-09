@@ -1,7 +1,7 @@
 package com.lucvs.apex_f1_api.infrastructure.persistence.adapter
 
 import com.lucvs.apex_f1_api.application.port.out.LoadUserPort
-import com.lucvs.apex_f1_api.application.port.out.ManageUserPort
+import com.lucvs.apex_f1_api.application.port.out.SaveUserPort
 import com.lucvs.apex_f1_api.domain.model.User
 import com.lucvs.apex_f1_api.infrastructure.persistence.mapper.UserMapper
 import com.lucvs.apex_f1_api.infrastructure.persistence.respository.UserRepository
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 class UserPersistenceAdapter(
     private val userRepository: UserRepository,
     private val userMapper: UserMapper
-) : LoadUserPort, ManageUserPort {
+) : LoadUserPort, SaveUserPort {
 
     override fun loadUserById(userId: Long): User? {
         val userEntity = userRepository.findByIdOrNull(userId)
@@ -24,7 +24,7 @@ class UserPersistenceAdapter(
         return userEntity?.let { userMapper.toDomain(it) }
     }
 
-    override fun saveUser(user: User): User {
+    override fun save(user: User): User {
         val entity = userMapper.toEntity(user)
         val savedEntity = userRepository.save(entity)
         return userMapper.toDomain(savedEntity)

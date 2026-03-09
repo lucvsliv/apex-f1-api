@@ -18,7 +18,7 @@ class SubscriptionPersistenceAdapter(
         return entity?.let { subscriptionMapper.toDomain(it) }
     }
 
-    override fun saveSubscription(subscription: Subscription): Subscription {
+    override fun save(subscription: Subscription): Subscription {
         val entity = subscriptionMapper.toEntity(subscription)
         val savedEntity = subscriptionRepository.save(entity)
         return subscriptionMapper.toDomain(savedEntity)

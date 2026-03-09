@@ -11,7 +11,7 @@ data class Subscription(
     val status: SubscriptionStatus
 ) {
     companion object {
-        fun createNew(userId: Long, tier: MembershipTier, billingKey: String): Subscription {
+        fun create(userId: Long, tier: MembershipTier, billingKey: String): Subscription {
             return Subscription(
                 userId = userId,
                 tier = tier,
