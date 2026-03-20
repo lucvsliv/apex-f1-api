@@ -4,7 +4,7 @@ name: Apex F1 API CI Pipeline
 # 2. 언제 이 로봇을 작동시킬 것인가? (Trigger)
 on:
   push:
-    branches: [ "main", "APEX-*" ] # main이나 APEX- 로 시작하는 브랜치에 push 될 때
+    branches: [ "main", "APEX-*", "feat/APEX-*" ] # main이나 APEX- 로 시작하는 브랜치에 push 될 때
   pull_request:
     branches: [ "main" ] # main 브랜치로 PR이 올라올 때
 
