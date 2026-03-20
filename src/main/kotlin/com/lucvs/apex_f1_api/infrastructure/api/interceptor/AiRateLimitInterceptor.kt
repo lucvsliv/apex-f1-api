@@ -7,6 +7,7 @@ import com.lucvs.apex_f1_api.domain.model.RateLimitStatus
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 
@@ -18,11 +19,18 @@ class AiRateLimitInterceptor(
 ) : HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val userId = request.getAttribute("userId") as? Long
-        if (userId == null) {
+        val auth = SecurityContextHolder.getContext().authentication
+
+        if (auth == null || !auth.isAuthenticated) {
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "인증되지 않은 사용자입니다.")
             return false
         }
+
+        val userId = auth.name.toLongOrNull()
+            ?: run {
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "잘못된 사용자 정보입니다.")
+                return false
+            }
 
         val user = loadUserPort.loadUserById(userId)
         if (user == null) {

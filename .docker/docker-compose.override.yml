@@ -5,6 +5,17 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  apex-f1-redis:
+    container_name: apex-f1-redis
+    ports:
+      - "6379:6379"
+
+  apex-f1-api:
+    container_name: apex-f1-api
+    ports:
+      - "8080:8080"
 
 volumes:
   db_data:

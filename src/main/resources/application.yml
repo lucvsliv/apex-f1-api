@@ -39,6 +39,12 @@ spring:
         index-type: HNSW
         initialize-schema: true
 
+  # Local Redis 설정
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+
 # Custom 설정
 openf1:
   api:

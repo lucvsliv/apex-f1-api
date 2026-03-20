@@ -1,4 +1,5 @@
 services:
+  # 1. Database
   apex-f1-postgres:
     image: pgvector/pgvector:pg16
     restart: always
@@ -6,3 +7,33 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  # 2. Cache & Rate Limiter
+  apex-f1-redis:
+    image: redis:alpine
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 3. Backend API
+  apex-f1-api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://apex-f1-postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATA_REDIS_HOST: apex-f1-redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_AI_OPENAI_API_KEY: ${OPENAI_API_KEY}
+      TOSS_PAYMENTS_SECRET_KEY: ${TOSS_SECRET_KEY}
+    depends_on:
+      apex-f1-postgres:
+        condition: service_started
+      apex-f1-redis:
+        condition: service_healthy
