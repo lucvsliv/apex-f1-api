@@ -1,30 +1,45 @@
 spring:
-  config:
-    import: optional:file:.env[.properties]
-
   datasource:
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.H2Dialect
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
   ai:
     openai:
-      api-key: ${OPENAI_API_KEY}
+      api-key: dummy-openai-key-for-test
       embedding:
         options:
           model: text-embedding-3-small
-
     vectorstore:
       pgvector:
+        # H2 DB는 pgvector 지원 X
+        initialize-schema: false
         dimensions: 1536
         distance-type: COSINE_DISTANCE
         index-type: HNSW
+
+# 6. 기타 커스텀 환경변수 (Toss, JWT 등)
+toss:
+  payments:
+    secret-key: dummy-toss-key-for-test
+
+jwt:
+  # ENV로 변경 필요
+  secret: "ApexFormulaOneSecretKeyForJwtAuthenticationMustBeLongerThan32Bytes"
+  access-token-expiration: 1800000 # 30분 (밀리초)
+  refresh-token-expiration: 1209600000 # 14일 (밀리초)
