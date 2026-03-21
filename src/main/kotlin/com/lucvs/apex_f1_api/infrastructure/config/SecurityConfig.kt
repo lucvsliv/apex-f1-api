@@ -27,7 +27,7 @@ class SecurityConfig(
         val jwtAuthenticationFilter = JwtAuthenticationFilter(jwtProvider)
 
         http
-            .cors { it.configurationSource(corsConfigurationSource()) }
+            .cors { it.configurationSource(corsConfigurationSource) }
             .csrf { it.disable() }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
