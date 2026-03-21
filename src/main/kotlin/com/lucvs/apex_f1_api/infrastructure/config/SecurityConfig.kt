@@ -2,6 +2,7 @@ package com.lucvs.apex_f1_api.infrastructure.config
 
 import com.lucvs.apex_f1_api.infrastructure.security.JwtAuthenticationFilter
 import com.lucvs.apex_f1_api.infrastructure.security.JwtProvider
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -44,9 +45,11 @@ class SecurityConfig(
     }
 
     @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
+    fun corsConfigurationSource(
+        @Value("\${cors.allowed-origins}") allowedOrigins: List<String>
+    ): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:3000")
+        configuration.allowedOrigins = allowedOrigins
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true
