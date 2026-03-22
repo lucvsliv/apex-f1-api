@@ -2,7 +2,7 @@ name: Apex F1 API CI Pipeline
 
 on:
   push:
-    branches: [ "main", "APEX-*", "feat/APEX-*" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
