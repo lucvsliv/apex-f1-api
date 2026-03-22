@@ -32,6 +32,9 @@ jobs:
 
             git fetch --all
             git reset --hard origin/main
+            
+            echo "[*] .env 파일 생성 중..."
+            echo "$ENV_FILE_CONTENT" > .env
 
             echo "[*] 도커 컨테이너를 다시 빌드하고 실행합니다..."
             docker compose --env-file .env -f .docker/docker-compose.yml -f .docker/docker-compose.override.yml up -d --build
