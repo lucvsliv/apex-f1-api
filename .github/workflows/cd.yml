@@ -1,11 +1,16 @@
-name: Backend CD Pipeline
+name: Apex F1 API CD Pipeline
 
 on:
-  push:
-    branches: ["main"]
+  workflow_run:
+    workflows: ["Apex F1 API CI Pipeline"]
+    types:
+      - completed
+    branches:
+      - main
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy to EC2
     runs-on: ubuntu-22.04
 
@@ -17,16 +22,16 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "배포를 시작합니다..."
+            echo "[*] 배포를 시작합니다..."
 
             cd ~/apex-f1-api
 
             git fetch --all
             git reset --hard origin/main
 
-            echo "도커 컨테이너를 다시 빌드하고 실행합니다..."
+            echo "[*] 도커 컨테이너를 다시 빌드하고 실행합니다..."
             docker compose --env-file .env -f .docker/docker-compose.yml -f .docker/docker-compose.override.yml up -d --build
 
             docker image prune -f
 
-            echo "백엔드 서버 자동 배포가 완료되었습니다 :)"
+            echo "[*] 백엔드 서버 자동 배포가 완료되었습니다 :)"
