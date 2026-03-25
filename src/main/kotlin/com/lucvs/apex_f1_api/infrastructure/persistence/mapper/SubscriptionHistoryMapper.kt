@@ -9,23 +9,23 @@ class SubscriptionHistoryMapper {
 
     fun toDomain(entity: SubscriptionHistoryEntity): SubscriptionHistory {
         return SubscriptionHistory(
-            id = entity.id,
-            userId = entity.userId,
-            previousTier = entity.previousTier,
-            currentTier = entity.currentTier,
-            action = entity.action,
-            createdAt = entity.createdAt
+            id              = entity.id,
+            userId          = entity.userId,
+            previousTier    = entity.previousTier,
+            currentTier     = entity.currentTier,
+            action          = entity.action,
+            createdAt       = entity.createdAt
         )
     }
 
     fun toEntity(domain: SubscriptionHistory): SubscriptionHistoryEntity {
         return SubscriptionHistoryEntity(
-            id = domain.id,
-            userId = domain.userId,
-            previousTier = domain.previousTier,
-            currentTier = domain.currentTier,
-            action = domain.action,
-            createdAt = domain.createdAt
+            id              = domain.id,
+            userId          = domain.userId,
+            previousTier    = domain.previousTier,
+            currentTier     = domain.currentTier,
+            action          = domain.action,
+            createdAt       = domain.createdAt
         )
     }
 }
