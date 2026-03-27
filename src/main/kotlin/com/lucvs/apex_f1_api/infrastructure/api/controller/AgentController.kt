@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api")
@@ -24,8 +25,9 @@ class AgentController(
 
     @PostMapping("/v1/agent/chat")
     fun chatWithAgent(@RequestBody request: ChatRequest): ResponseEntity<ChatResponse> {
-        val responseText = chatWithAgentUseCase.chat(request.message)
+        val activeChatId = request.chatId ?: UUID.randomUUID().toString()
+        val responseText = chatWithAgentUseCase.chat(activeChatId, request.message)
 
-        return ResponseEntity.ok(ChatResponse(responseText))
+        return ResponseEntity.ok(ChatResponse(activeChatId, responseText))
     }
 }
