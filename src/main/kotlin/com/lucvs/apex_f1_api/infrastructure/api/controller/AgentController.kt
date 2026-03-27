@@ -24,8 +24,7 @@ class AgentController(
 
     @PostMapping("/v1/agent/chat")
     fun chatWithAgent(@RequestBody request: ChatRequest): ResponseEntity<ChatResponse> {
-        val userId = 1L     // TODO: 임시 User Id, SecurityContext 적용 예정
-        val responseText = chatWithAgentUseCase.chat(userId, request.message)
+        val responseText = chatWithAgentUseCase.chat(request.message)
 
         return ResponseEntity.ok(ChatResponse(responseText))
     }

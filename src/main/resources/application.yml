@@ -7,12 +7,27 @@ spring:
     compose:
       enabled: false
 
-  # DB 연결 설정
+  # DB 연결 설정 - Multi Datasource
   datasource:
-    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    # 1. 메인 비즈니스
+    main:
+      jdbc-url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+      username: ${MAIN_POSTGRES_USERNAME}
+      password: ${MAIN_POSTGRES_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        pool-name: MainHikariPool
+        maximum-pool-size: 10
+
+    # 2. ApexAI 전용 Read-Only DataSource
+    apexai-readonly:
+      jdbc-url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+      username: ${APEXAI_POSTGRES_USERNAME}
+      password: ${APEXAI_POSTGRES_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        pool-name: ApexAiReadOnlyPool
+        maximum-pool-size: 5
 
   # JPA 설정 (Hibernate)
   jpa:
@@ -44,15 +59,6 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
-
-# Custom 설정
-openf1:
-  api:
-    url: "https://api.openf1.org/v1"
-
-app:
-  admin:
-    secret-key: "my-super-secret-key"
 
 jwt:
   # ENV로 변경 필요
