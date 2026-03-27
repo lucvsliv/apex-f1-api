@@ -8,6 +8,7 @@ import com.lucvs.apex_f1_api.application.port.out.LoadSeasonDriverPort
 import com.lucvs.apex_f1_api.application.port.out.LoadSeasonEntrantDriverPort
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SeasonDriverDetailResponse
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SeasonDriverSummaryResponse
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,6 +20,7 @@ class SeasonDriverService(
     private val loadCountryPort: LoadCountryPort
 ) : GetSeasonDriverUseCase {
 
+    @Cacheable(value = ["seasonDrivers"], key = "#year")
     override fun getSeasonDrivers(year: Int): List<SeasonDriverSummaryResponse> {
         // 1. 해당 시즌의 모든 시즌-드라이버 & 시즌-컨스트럭터 정보 조회
         val seasonDrivers = loadSeasonDriverPort.loadSeasonDrivers(year)

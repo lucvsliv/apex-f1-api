@@ -2,18 +2,21 @@ package com.lucvs.apex_f1_api.application.service.ai
 
 import com.lucvs.apex_f1_api.application.port.`in`.ChatWithAgentUseCase
 import org.springframework.ai.chat.client.ChatClient
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor
+import org.springframework.ai.chat.memory.ChatMemory
 import org.springframework.ai.openai.OpenAiChatOptions
 import org.springframework.stereotype.Service
 
 @Service
 class ApexAiAgentService(
     chaClientBuilder: ChatClient.Builder,
-    private val schemaContextService: SchemaContextService
+    private val schemaContextService: SchemaContextService,
+    private val chatMemory: ChatMemory
 ) : ChatWithAgentUseCase {
 
     private val chatClient = chaClientBuilder.build()
 
-    override fun chat(userMessage: String): String {
+    override fun chat(chatId: String, userMessage: String): String {
         val systemPrompt = """
             You are Apex-AI, a specialized Formula 1 data expert.
             You have access to a PostgreSQL database containing detailed F1 historical data.
@@ -31,6 +34,10 @@ class ApexAiAgentService(
         return chatClient.prompt()
             .system(systemPrompt)
             .user(userMessage)
+            .advisors(
+                MessageChatMemoryAdvisor.builder(chatMemory)
+                    .conversationId(chatId)
+                    .build())
             .options(
                 OpenAiChatOptions.builder()
                     .toolNames("executeF1SqlTool")
