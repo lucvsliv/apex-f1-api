@@ -1,9 +1,23 @@
 spring:
+  # DB 연결 설정 - Multi Datasource (테스트용 H2)
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    # 1. 메인 비즈니스용
+    main:
+      jdbc-url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+      hikari:
+        pool-name: TestMainPool
+
+    # 2. ApexAI 전용 Read-Only 데이터소스
+    apexai-readonly:
+      jdbc-url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+      hikari:
+        pool-name: TestApexAiReadOnlyPool
 
   jpa:
     hibernate:
@@ -33,7 +47,7 @@ spring:
         distance-type: COSINE_DISTANCE
         index-type: HNSW
 
-# 6. 기타 커스텀 환경변수 (Toss, JWT 등)
+# 기타 커스텀 환경변수 (Toss, JWT 등)
 toss:
   payments:
     secret-key: dummy-toss-key-for-test
@@ -45,4 +59,4 @@ jwt:
   refresh-token-expiration: 1209600000 # 14일 (밀리초)
 
 cors:
-  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  allowed-origins: http://localhost:3000
