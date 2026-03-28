@@ -12,17 +12,17 @@ class SchemaContextService {
         return """
             # Database Schema for APEX-F1
             You are an expert SQL Data Analyst for Formula 1. 
-            Write safe, Read-Only PostgreSQL queries based strictly on the schema below. 
+            Write safe, Read-Only PostgreSQL queries based strictly on the schema below.
 
             ## 1. Core Entities (기본 정보 및 누적 스탯)
 
             - `driver` (선수 정보 및 역대 통산 기록)
-              - `id` (PK, ex: 'max_verstappen')
+              - `id` (PK, ex: 'max-verstappen')
               - `name`, `full_name`, `abbreviation` (ex: 'VER'), `permanent_number`
               - `total_championship_wins`, `total_race_wins`, `total_podiums`, `total_points`, `total_pole_positions`
 
             - `constructor` (팀 정보 및 역대 통산 기록)
-              - `id` (PK, ex: 'red_bull')
+              - `id` (PK, ex: 'red-bull')
               - `name`, `full_name`
               - `total_championship_wins`, `total_race_wins`, `total_points`
 
@@ -63,9 +63,10 @@ class SchemaContextService {
 
             ## SQL Writing Rules
             1. Only use `SELECT` statements. Never use DML/DDL.
-            2. For string matching (like names), always use `ILIKE` for case-insensitivity (e.g., `WHERE driver.name ILIKE '%max%'`).
-            3. To get total career stats, query the `driver` table directly rather than summing up all historical `race_result` rows, as `driver` holds pre-calculated totals.
-            4. Join relations: `race_result.driver_id = driver.id`, `race_result.race_id = race.id`.
+            2. IMPORTANT: `id` values MUST use kebab-case with hyphens (e.g., 'charles-leclerc', 'lando-norris'). NEVER use underscores.
+            3. For string matching (like names or id), always use `ILIKE` for case-insensitivity (e.g., `WHERE driver.name ILIKE '%max%'`).
+            4. To get total career stats, query the `driver` table directly rather than summing up all historical `race_result` rows, as `driver` holds pre-calculated totals.
+            5. Join relations: `race_result.driver_id = driver.id`, `race_result.race_id = race.id`.
         """.trimIndent()
     }
 }
