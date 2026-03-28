@@ -1,5 +1,6 @@
 package com.lucvs.apex_f1_api.infrastructure.api.controller
 
+import com.lucvs.apex_f1_api.application.port.`in`.ChatCommand
 import com.lucvs.apex_f1_api.application.port.`in`.ChatWithAgentUseCase
 import com.lucvs.apex_f1_api.infrastructure.api.dto.ChatRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.ChatResponse
@@ -26,7 +27,8 @@ class AgentController(
     @PostMapping("/v1/agent/chat")
     fun chatWithAgent(@RequestBody request: ChatRequest): ResponseEntity<ChatResponse> {
         val activeChatId = request.chatId ?: UUID.randomUUID().toString()
-        val responseText = chatWithAgentUseCase.chat(activeChatId, request.message)
+        val command = ChatCommand(chatId = activeChatId, message = request.message)
+        val responseText = chatWithAgentUseCase.chat(command)
 
         return ResponseEntity.ok(ChatResponse(activeChatId, responseText))
     }

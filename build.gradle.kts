@@ -32,6 +32,7 @@ dependencies {
 	implementation("org.springframework.ai:spring-ai-advisors-vector-store")
 	implementation("org.springframework.ai:spring-ai-starter-model-openai")
 	implementation("org.springframework.ai:spring-ai-starter-vector-store-pgvector")
+	implementation("org.springframework.ai:spring-ai-pdf-document-reader")
 
 	runtimeOnly("org.postgresql:postgresql")
 	developmentOnly("org.springframework.ai:spring-ai-spring-boot-docker-compose")
