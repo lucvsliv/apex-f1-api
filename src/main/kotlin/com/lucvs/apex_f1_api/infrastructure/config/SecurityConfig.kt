@@ -1,5 +1,6 @@
 package com.lucvs.apex_f1_api.infrastructure.config
 
+import com.lucvs.apex_f1_api.domain.model.Role
 import com.lucvs.apex_f1_api.infrastructure.security.JwtAuthenticationFilter
 import com.lucvs.apex_f1_api.infrastructure.security.JwtProvider
 import org.springframework.beans.factory.annotation.Value
@@ -34,8 +35,8 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
                 auth
+//                    .requestMatchers("/api/v1/admin/**").hasAuthority(Role.ROLE_ADMIN.name)
                     .requestMatchers("/api/v1/auth/**").permitAll()
-                    .requestMatchers("/api/v1/seasons/**").permitAll()
                     .requestMatchers("/api/v1/users/**").authenticated()
                     .anyRequest().authenticated()
             }

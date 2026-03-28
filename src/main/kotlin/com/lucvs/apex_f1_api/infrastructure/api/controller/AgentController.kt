@@ -1,5 +1,6 @@
 package com.lucvs.apex_f1_api.infrastructure.api.controller
 
+import com.lucvs.apex_f1_api.application.port.`in`.ChatCommand
 import com.lucvs.apex_f1_api.application.port.`in`.ChatWithAgentUseCase
 import com.lucvs.apex_f1_api.infrastructure.api.dto.ChatRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.ChatResponse
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api")
@@ -24,8 +26,10 @@ class AgentController(
 
     @PostMapping("/v1/agent/chat")
     fun chatWithAgent(@RequestBody request: ChatRequest): ResponseEntity<ChatResponse> {
-        val responseText = chatWithAgentUseCase.chat(request.message)
+        val activeChatId = request.chatId ?: UUID.randomUUID().toString()
+        val command = ChatCommand(chatId = activeChatId, message = request.message)
+        val responseText = chatWithAgentUseCase.chat(command)
 
-        return ResponseEntity.ok(ChatResponse(responseText))
+        return ResponseEntity.ok(ChatResponse(activeChatId, responseText))
     }
 }

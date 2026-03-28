@@ -14,9 +14,7 @@ class F1SqlToolProvider(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    // AI가 보내는 요청 구조체
     data class SqlRequest(val query: String)
-    // AI에게 돌려줄 응답 구조체
     data class SqlResponse(val result: String)
 
     @Bean
@@ -26,7 +24,7 @@ class F1SqlToolProvider(
             val sql = request.query.trim()
             log.info("[*] Apex-AI generated SQL: {}", sql)
 
-            // 🛡️ 2차 보안 방어벽: 애플리케이션 단에서 위험 키워드 필터링
+            // secondary barrier for DB integrity
             val upperSql = sql.uppercase()
             if (upperSql.contains("INSERT ") || upperSql.contains("UPDATE ") ||
                 upperSql.contains("DELETE ") || upperSql.contains("DROP ") ||
@@ -36,11 +34,8 @@ class F1SqlToolProvider(
             }
 
             try {
-                // 💡 SQL 실행 후 결과를 List<Map<String, Any>> 형태로 받아옵니다.
-                // (이전에 JdbcTemplate에 maxRows=100 제한을 걸어두었기 때문에 메모리 폭발 위험이 없습니다.)
                 val rows = apexAiJdbcTemplate.queryForList(sql)
 
-                // 결과를 문자열로 변환하여 AI에게 반환
                 val resultString = if (rows.isEmpty()) {
                     "No data found for the given query."
                 } else {
@@ -52,7 +47,6 @@ class F1SqlToolProvider(
 
             } catch (e: Exception) {
                 log.error("[!] SQL Execution Error: {}", e.message)
-                // 문법 오류 등이 나면 에러 메시지를 AI에게 돌려주어 '스스로 쿼리를 고칠 기회'를 줍니다.
                 SqlResponse("SQL Execution Error: ${e.message}. Please fix the query and try again.")
             }
         }
