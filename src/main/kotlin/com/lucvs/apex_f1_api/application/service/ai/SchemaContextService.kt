@@ -18,7 +18,7 @@ class SchemaContextService {
 
             - `driver` (선수 정보 및 역대 통산 기록)
               - `id` (PK, ex: 'max-verstappen')
-              - `name`, `full_name`, `abbreviation` (ex: 'VER'), `permanent_number`
+              - `name`, `full_name`, `abbreviation` (ex: 'VER'), `permanent_number`, 
               - `total_championship_wins`, `total_race_wins`, `total_podiums`, `total_points`, `total_pole_positions`
 
             - `constructor` (팀 정보 및 역대 통산 기록)
