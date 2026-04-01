@@ -7,7 +7,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(
-    name = "user",
+    name = "users",
     uniqueConstraints = [
         UniqueConstraint(columnNames = ["provider", "provider_id"])
     ]
