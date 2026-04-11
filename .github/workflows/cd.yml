@@ -39,7 +39,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # [최적화 2] Docker 레이어 캐싱 (GHA 전용)
       # 빌드된 각 레이어를 GitHub Actions 내부 저장소에 저장
