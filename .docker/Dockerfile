@@ -3,16 +3,16 @@ FROM amazoncorretto:17-alpine-jdk AS builder
 WORKDIR /app
 
 # [최적화 1] 변경이 잦은 소스코드보다, 변경이 적은 '설정 파일'을 먼저 복사
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle.kts settings.gradle.kts ./
+COPY ../gradlew .
+COPY ../gradle gradle
+COPY ../build.gradle.kts settings.gradle.kts ./
 
 # [최적화 2] 소스코드가 없어도 의존성(라이브러리)만 먼저 다운로드
 # 캐시 재사용
 RUN ./gradlew dependencies --no-daemon
 
 # 실제 소스코드를 복사, 빌드
-COPY src src
+COPY ../src src
 RUN ./gradlew bootJar -x test --no-daemon
 
 # ---------------------------------------------------
