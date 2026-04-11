@@ -30,7 +30,6 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # [✅ 에러 해결을 위한 핵심 추가 사항]
       # type=gha 캐시 Export를 지원하는 고급 빌더 엔진 활성화
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
