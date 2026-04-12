@@ -59,6 +59,9 @@ dependencies {
 	// bucket4j
 	implementation("com.bucket4j:bucket4j-core:8.10.0")
 	implementation("com.bucket4j:bucket4j-redis:8.10.0")
+
+	// kafka
+	implementation("org.springframework.kafka:spring-kafka")
 }
 
 dependencyManagement {
