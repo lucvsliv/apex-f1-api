@@ -60,6 +60,11 @@ spring:
       host: 127.0.0.1
       port: 6379
 
+  # Kafka 설정
+  kafka:
+    listener:
+      auto-startup: false # 리스너 자동 실행 방지
+
 jwt:
   # ENV로 변경 필요
   secret: "ApexFormulaOneSecretKeyForJwtAuthenticationMustBeLongerThan32Bytes"
