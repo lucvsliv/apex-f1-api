@@ -21,8 +21,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # [최적화 1] Gradle 의존성 캐싱
-      # ~/.gradle 폴더를 자동으로 저장, 복원하여 라이브러리 다운로드 시간을 제거
+      # [단계 1] JDK 설정 및 Gradle 빌드 (최신 .jar 파일 생성)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -30,7 +29,14 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # type=gha 캐시 Export를 지원하는 고급 빌더 엔진 활성화
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        # 테스트를 제외하고 clean 빌드를 수행하여 항상 최신 .jar를 생성합니다.
+        run: ./gradlew clean bootJar -x test
+
+      # [단계 2] Docker Buildx 설정 (캐싱 지원)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -41,15 +47,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # [최적화 2] Docker 레이어 캐싱 (GHA 전용)
-      # 빌드된 각 레이어를 GitHub Actions 내부 저장소에 저장
+      # [단계 3] 최신 .jar 파일을 포함하여 도커 이미지 빌드 및 푸시
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: .docker/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/apex-f1-api:latest
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/apex-f1-api:latest
+            ghcr.io/${{ github.repository_owner }}/apex-f1-api:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -71,17 +78,7 @@ jobs:
           envs: ENV_FILE_CONTENT
           script: |
             echo "[*] 배포를 시작합니다..."
-            
-            echo "[*] 현재 서버 Public IP:"
-            curl -s ifconfig.me
-            echo ""
 
-            echo "[*] 내부 IP:"
-            hostname -I
-
-            echo "[*] hostname:"
-            hostname
-            
             cd ~/apex-f1-api
 
             git fetch --all
@@ -90,13 +87,9 @@ jobs:
             echo "[*] .env 파일 생성 중..."
             echo "$ENV_FILE_CONTENT" > .env
 
-            echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-            echo "[*] 최신 이미지를 Pull 받습니다..."
-            docker pull ghcr.io/${{ github.repository_owner }}/apex-f1-api:latest
-
-            echo "[*] 도커 컨테이너를 다시 실행합니다..."
-            docker compose --env-file .env -f .docker/docker-compose.yml -f .docker/docker-compose.override.yml up -d
+            echo "[*] 도커 컨테이너를 다시 빌드하고 실행합니다..."
+            docker compose --env-file .env -f .docker/docker-compose.yml -f .docker/docker-compose.override.yml up -d --build
 
             docker image prune -f
+
             echo "[*] 백엔드 서버 자동 배포가 완료되었습니다 :)"
