@@ -36,9 +36,8 @@ services:
 
   # 4. Backend API
   apex-f1-api:
-    build:
-      context: ..
-      dockerfile: Dockerfile
+    # 빌드 대신 GHCR의 이미지를 바로 당겨오도록 수정
+    image: ghcr.io/lucvsliv/apex-f1-api:latest
     restart: always
     environment:
       # Multi-Datasource DB URL

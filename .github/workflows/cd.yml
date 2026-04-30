@@ -21,8 +21,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # [최적화 1] Gradle 의존성 캐싱
-      # ~/.gradle 폴더를 자동으로 저장, 복원하여 라이브러리 다운로드 시간을 제거
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -30,7 +28,6 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # type=gha 캐시 Export를 지원하는 고급 빌더 엔진 활성화
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -41,8 +38,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # [최적화 2] Docker 레이어 캐싱 (GHA 전용)
-      # 빌드된 각 레이어를 GitHub Actions 내부 저장소에 저장
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
@@ -81,11 +76,13 @@ jobs:
 
             echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+            # 수정됨: Docker Compose를 활용하여 최신 이미지를 확실히 Pull
             echo "[*] 최신 이미지를 Pull 받습니다..."
-            docker pull ghcr.io/${{ github.repository_owner }}/apex-f1-api:latest
+            docker compose --env-file .env -f .docker/docker-compose.yml -f .docker/docker-compose.override.yml pull
 
+            # 수정됨: --force-recreate 옵션을 추가하여 컨테이너 강제 갱신
             echo "[*] 도커 컨테이너를 다시 실행합니다..."
-            docker compose --env-file .env -f .docker/docker-compose.yml -f .docker/docker-compose.override.yml up -d
+            docker compose --env-file .env -f .docker/docker-compose.yml -f .docker/docker-compose.override.yml up -d --force-recreate
 
             docker image prune -f
             echo "[*] 백엔드 서버 자동 배포가 완료되었습니다 :)"
