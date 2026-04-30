@@ -5,6 +5,7 @@ import com.lucvs.apex_f1_api.application.port.out.PublishCouponEventPort
 import com.lucvs.apex_f1_api.infrastructure.kafka.dto.CouponIssueMessage
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.support.SendResult
 import org.springframework.stereotype.Component
 
 @Component
@@ -26,10 +27,11 @@ class KafkaCouponProducerAdapter(
         // 객체를 JSON String으로 변환하여 전송
         val jsonString = objectMapper.writeValueAsString(messageObject)
 
+        log.info("--> Kafka 메세지 발행 직전")
         kafkaTemplate.send(TOPIC_NAME, userId.toString(), jsonString)
-            .whenComplete { result, ex ->
+            .whenComplete { result: SendResult<String, String>?, ex: Throwable? ->
                 if (ex == null) {
-                    log.debug("[*] Kafka 메세지 발행 성공: {}", jsonString)
+                    log.info("[*] Kafka 메세지 발행 성공: {}", jsonString)
                 } else {
                     log.error("[!] Kafka 메세지 발행 실패: {}", jsonString, ex)
                 }

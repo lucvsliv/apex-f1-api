@@ -19,7 +19,7 @@ class CouponEventConsumer(
 
     @KafkaListener(
         topics = ["coupon-issue-topic"],
-        groupId = "apex-f1-store-group"
+        groupId = "apex-f1-store-group-v2"
     )
     fun consumeCouponIssueEvent(message: String) {
         try {
@@ -36,7 +36,6 @@ class CouponEventConsumer(
     }
 
     private fun sendToDeadLetterQueue(failedMessage: String, errorMessage: String) {
-        // 에러 원인을 추적할 수 있도록 헤더나 메시지 자체에 에러 로그를 덧붙여서 보낼 수도 있습니다.
         kafkaTemplate.send(DLQ_TOPIC, failedMessage)
             .whenComplete { _, ex ->
                 if (ex != null) {
