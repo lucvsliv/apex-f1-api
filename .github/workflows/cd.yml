@@ -72,8 +72,15 @@ jobs:
           script: |
             echo "[*] 배포를 시작합니다..."
             
-            echo "[*] 현재 서버 IP:"
-            curl ifconfig.me
+            echo "[*] 현재 서버 Public IP:"
+            curl -s ifconfig.me
+            echo ""
+
+            echo "[*] 내부 IP:"
+            hostname -I
+
+            echo "[*] hostname:"
+            hostname
             
             cd ~/apex-f1-api
 
