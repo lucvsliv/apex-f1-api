@@ -8,3 +8,12 @@ data class SocialLoginRequest(
 data class AuthResponse(
     val accessToken: String
 )
+
+data class EmailOtpRequest(
+    val email: String
+)
+
+data class EmailVerifyRequest(
+    val email: String,
+    val otp: String
+)

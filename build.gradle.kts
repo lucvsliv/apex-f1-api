@@ -35,6 +35,7 @@ dependencies {
 	implementation("org.springframework.ai:spring-ai-pdf-document-reader")
 
 	runtimeOnly("org.postgresql:postgresql")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	developmentOnly("org.springframework.ai:spring-ai-spring-boot-docker-compose")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -62,6 +63,9 @@ dependencies {
 
 	// kafka
 	implementation("org.springframework.kafka:spring-kafka")
+
+	// mail
+	implementation("org.springframework.boot:spring-boot-starter-mail")
 }
 
 dependencyManagement {

@@ -1,0 +1,5 @@
+package com.lucvs.apex_f1_api.application.port.out
+
+interface DeletePostPort {
+    fun deletePost(id: Long)
+}
