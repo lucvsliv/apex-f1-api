@@ -6,6 +6,7 @@ import com.lucvs.apex_f1_api.infrastructure.security.JwtProvider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -35,8 +36,8 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
                 auth
-//                    .requestMatchers("/api/v1/admin/**").hasAuthority(Role.ROLE_ADMIN.name)
                     .requestMatchers("/api/v1/auth/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
                     .requestMatchers("/api/v1/users/**").authenticated()
                     .anyRequest().authenticated()
             }

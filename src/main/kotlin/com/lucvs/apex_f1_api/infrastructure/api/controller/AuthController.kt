@@ -4,11 +4,15 @@ import com.lucvs.apex_f1_api.application.port.`in`.CheckNicknameUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.LoginUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SignUpUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SocialLoginUseCase
+import com.lucvs.apex_f1_api.application.port.`in`.SendOtpUseCase
+import com.lucvs.apex_f1_api.application.port.`in`.VerifyOtpUseCase
 import com.lucvs.apex_f1_api.domain.model.AuthProvider
 import com.lucvs.apex_f1_api.infrastructure.api.dto.AuthResponse
 import com.lucvs.apex_f1_api.infrastructure.api.dto.LoginRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SignUpRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SocialLoginRequest
+import com.lucvs.apex_f1_api.infrastructure.api.dto.EmailOtpRequest
+import com.lucvs.apex_f1_api.infrastructure.api.dto.EmailVerifyRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,6 +29,8 @@ class AuthController(
     private val socialLoginUseCase: SocialLoginUseCase,
     private val loginUseCase: LoginUseCase,
     private val checkNicknameUseCase: CheckNicknameUseCase,
+    private val sendOtpUseCase: SendOtpUseCase,
+    private val verifyOtpUseCase: VerifyOtpUseCase,
 ) {
 
     @PostMapping("/signup")
@@ -72,6 +78,26 @@ class AuthController(
             ResponseEntity.ok("사용 가능한 닉네임입니다.")
         } catch (e: IllegalArgumentException) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)
+        }
+    }
+
+    @PostMapping("/email/send")
+    fun sendEmailOtp(@RequestBody request: EmailOtpRequest): ResponseEntity<String> {
+        return try {
+            sendOtpUseCase.sendOtp(request.email)
+            ResponseEntity.ok("인증번호가 발송되었습니다.")
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일 발송에 실패했습니다.")
+        }
+    }
+
+    @PostMapping("/email/verify")
+    fun verifyEmailOtp(@RequestBody request: EmailVerifyRequest): ResponseEntity<String> {
+        val isValid = verifyOtpUseCase.verifyOtp(request.email, request.otp)
+        return if (isValid) {
+            ResponseEntity.ok("인증되었습니다.")
+        } else {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증번호가 일치하지 않습니다.")
         }
     }
 }

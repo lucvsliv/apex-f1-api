@@ -4,9 +4,13 @@ import com.lucvs.apex_f1_api.application.port.`in`.CheckNicknameUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.LoginUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SignUpUseCase
 import com.lucvs.apex_f1_api.application.port.`in`.SocialLoginUseCase
+import com.lucvs.apex_f1_api.application.port.`in`.SendOtpUseCase
+import com.lucvs.apex_f1_api.application.port.`in`.VerifyOtpUseCase
 import com.lucvs.apex_f1_api.application.port.out.LoadSocialUserPort
 import com.lucvs.apex_f1_api.application.port.out.LoadUserPort
 import com.lucvs.apex_f1_api.application.port.out.SaveUserPort
+import com.lucvs.apex_f1_api.application.port.out.OtpPort
+import com.lucvs.apex_f1_api.application.port.out.SendEmailOtpPort
 import com.lucvs.apex_f1_api.domain.model.AuthProvider
 import com.lucvs.apex_f1_api.domain.model.User
 import com.lucvs.apex_f1_api.infrastructure.api.dto.LoginRequest
@@ -26,8 +30,10 @@ class AuthService(
     private val jwtProvider: JwtProvider,
     private val saveUserPort: SaveUserPort,
     private val passwordEncoder: PasswordEncoder,
-    private val loadUserPort: LoadUserPort
-) : SignUpUseCase, SocialLoginUseCase, LoginUseCase, CheckNicknameUseCase {
+    private val loadUserPort: LoadUserPort,
+    private val otpPort: OtpPort,
+    private val sendEmailOtpPort: SendEmailOtpPort
+) : SignUpUseCase, SocialLoginUseCase, LoginUseCase, CheckNicknameUseCase, SendOtpUseCase, VerifyOtpUseCase {
 
     /**
      * 소셜 로그인
@@ -65,6 +71,12 @@ class AuthService(
         // 1. 중복 검사
         if (loadUserPort.existsByEmail(request.email)) { throw IllegalArgumentException("이미 사용 중인 이메일입니다.") }
         if (loadUserPort.existsByNickname(request.nickname)) { throw IllegalArgumentException("이미 사용 중인 닉네임입니다. ") }
+
+        // 2. 이메일 인증 확인
+        val isVerified = otpPort.getOtp("verified:" + request.email) == "true"
+        if (!isVerified) {
+            throw IllegalArgumentException("이메일 인증이 완료되지 않았습니다.")
+        }
 
         // 2. 비밀번호 암호화
         val encodedPassword = passwordEncoder.encode(request.password)
@@ -114,5 +126,36 @@ class AuthService(
         if (loadUserPort.existsByNickname(nickname)) {
             throw IllegalArgumentException("이미 사용 중인 닉네임입니다.")
         }
+    }
+
+    /**
+     * 이메일 OTP 전송
+     */
+    override fun sendOtp(email: String) {
+        // 6자리 난수 생성
+        val otp = (100000..999999).random().toString()
+        
+        // Redis 저장 (5분 만료)
+        otpPort.saveOtp(email, otp, 5)
+        
+        // 이메일 발송
+        sendEmailOtpPort.sendOtp(email, otp)
+    }
+
+    /**
+     * 이메일 OTP 검증
+     */
+    override fun verifyOtp(email: String, otp: String): Boolean {
+        val savedOtp = otpPort.getOtp(email)
+        val isVerified = savedOtp != null && savedOtp == otp
+        
+        if (isVerified) {
+            // 인증 성공 시 'verified' 플래그 저장 (10분간 유효)
+            otpPort.saveOtp("verified:$email", "true", 10)
+            // OTP 자체는 삭제
+            otpPort.deleteOtp(email)
+        }
+        
+        return isVerified
     }
 }

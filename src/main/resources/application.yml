@@ -66,6 +66,19 @@ spring:
     listener:
       auto-startup: true # 리스너 자동 실행 방지
 
+  # Mail 설정
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 jwt:
   # ENV로 변경 필요
   secret: "ApexFormulaOneSecretKeyForJwtAuthenticationMustBeLongerThan32Bytes"

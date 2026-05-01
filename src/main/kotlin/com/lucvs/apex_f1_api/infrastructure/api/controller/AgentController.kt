@@ -2,6 +2,7 @@ package com.lucvs.apex_f1_api.infrastructure.api.controller
 
 import com.lucvs.apex_f1_api.application.port.`in`.ChatCommand
 import com.lucvs.apex_f1_api.application.port.`in`.ChatWithAgentUseCase
+import com.lucvs.apex_f1_api.application.port.`in`.ClearChatMemoryUseCase
 import com.lucvs.apex_f1_api.infrastructure.api.dto.ChatRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.ChatResponse
 import org.springframework.http.ResponseEntity
@@ -15,7 +16,8 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api")
 class AgentController(
-    private val chatWithAgentUseCase: ChatWithAgentUseCase
+    private val chatWithAgentUseCase: ChatWithAgentUseCase,
+    private val clearChatMemoryUseCase: ClearChatMemoryUseCase
 ) {
 
     // Health Check Endpoint
@@ -31,5 +33,12 @@ class AgentController(
         val responseText = chatWithAgentUseCase.chat(command)
 
         return ResponseEntity.ok(ChatResponse(activeChatId, responseText))
+    }
+
+    @PostMapping("/v1/agent/clear")
+    fun clearChatMemory(@RequestBody request: ChatRequest): ResponseEntity<String> {
+        val activeChatId = request.chatId ?: return ResponseEntity.badRequest().body("chatId is required")
+        clearChatMemoryUseCase.clear(activeChatId)
+        return ResponseEntity.ok("Chat memory cleared")
     }
 }
