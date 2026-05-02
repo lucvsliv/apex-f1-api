@@ -13,6 +13,7 @@ import com.lucvs.apex_f1_api.infrastructure.api.dto.SignUpRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.SocialLoginRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.EmailOtpRequest
 import com.lucvs.apex_f1_api.infrastructure.api.dto.EmailVerifyRequest
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,6 +33,7 @@ class AuthController(
     private val sendOtpUseCase: SendOtpUseCase,
     private val verifyOtpUseCase: VerifyOtpUseCase,
 ) {
+    private val logger = LoggerFactory.getLogger(AuthController::class.java)
 
     @PostMapping("/signup")
     fun signUp(@RequestBody request: SignUpRequest): ResponseEntity<String> {
@@ -87,6 +89,7 @@ class AuthController(
             sendOtpUseCase.sendOtp(request.email)
             ResponseEntity.ok("인증번호가 발송되었습니다.")
         } catch (e: Exception) {
+            logger.error("이메일 발송 실패: email={}", request.email, e)
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일 발송에 실패했습니다.")
         }
     }

@@ -1,6 +1,7 @@
 package com.lucvs.apex_f1_api.infrastructure.mail.adapter
 
 import com.lucvs.apex_f1_api.application.port.out.SendEmailOtpPort
+import org.slf4j.LoggerFactory
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Component
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component
 class EmailAdapter(
     private val mailSender: JavaMailSender
 ) : SendEmailOtpPort {
+    private val logger = LoggerFactory.getLogger(EmailAdapter::class.java)
 
     override fun sendOtp(email: String, otp: String) {
         val message = SimpleMailMessage()
@@ -25,6 +27,8 @@ class EmailAdapter(
             감사합니다.
         """.trimIndent()
         
+        logger.info("이메일 발송 시도: to={}", email)
         mailSender.send(message)
+        logger.info("이메일 발송 완료: to={}", email)
     }
 }

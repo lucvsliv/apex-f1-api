@@ -39,6 +39,8 @@ services:
     # 빌드 대신 GHCR의 이미지를 바로 당겨오도록 수정
     image: ghcr.io/lucvsliv/apex-f1-api:latest
     restart: always
+    env_file:
+      - ../.env
     environment:
       # Multi-Datasource DB URL
       SPRING_DATASOURCE_MAIN_JDBC_URL: jdbc:postgresql://apex-f1-postgres:5432/${POSTGRES_DB}
