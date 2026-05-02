@@ -14,19 +14,19 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/agent")
 class AgentController(
     private val chatWithAgentUseCase: ChatWithAgentUseCase,
     private val clearChatMemoryUseCase: ClearChatMemoryUseCase
 ) {
 
-    // Health Check Endpoint
+    // Health Check Endpoint (Moved to consistent path or left as is if needed elsewhere)
     @GetMapping("/health")
     fun healthCheck(): ResponseEntity<String> {
-        return ResponseEntity.ok("Apex F1 API is in good health :)")
+        return ResponseEntity.ok("Apex F1 AI Agent Service is in good health :)")
     }
 
-    @PostMapping("/v1/agent/chat")
+    @PostMapping("/chat")
     fun chatWithAgent(@RequestBody request: ChatRequest): ResponseEntity<ChatResponse> {
         val activeChatId = request.chatId ?: UUID.randomUUID().toString()
         val command = ChatCommand(chatId = activeChatId, message = request.message)
@@ -35,7 +35,7 @@ class AgentController(
         return ResponseEntity.ok(ChatResponse(activeChatId, responseText))
     }
 
-    @PostMapping("/v1/agent/clear")
+    @PostMapping("/clear")
     fun clearChatMemory(@RequestBody request: ChatRequest): ResponseEntity<String> {
         val activeChatId = request.chatId ?: return ResponseEntity.badRequest().body("chatId is required")
         clearChatMemoryUseCase.clear(activeChatId)
