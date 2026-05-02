@@ -60,12 +60,6 @@ spring:
       host: 127.0.0.1
       port: 6379
 
-  # Kafka 설정
-  kafka:
-    bootstrap-servers: localhost:9092
-    listener:
-      auto-startup: true # 리스너 자동 실행 방지
-
   # Mail 설정
   mail:
     host: smtp.gmail.com
@@ -82,7 +76,7 @@ spring:
 jwt:
   # ENV로 변경 필요
   secret: "ApexFormulaOneSecretKeyForJwtAuthenticationMustBeLongerThan32Bytes"
-  access-token-expiration: 1800000 # 30분 (밀리초)
+  access-token-expiration: 86400000 # 24시간 (밀리초)
   refresh-token-expiration: 1209600000 # 14일 (밀리초)
 
 toss:
