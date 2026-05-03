@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
+import org.springframework.http.MediaType
+import reactor.core.publisher.Flux
+
 @RestController
 @RequestMapping("/api/v1/agent")
 class AgentController(
@@ -20,19 +23,18 @@ class AgentController(
     private val clearChatMemoryUseCase: ClearChatMemoryUseCase
 ) {
 
-    // Health Check Endpoint (Moved to consistent path or left as is if needed elsewhere)
+    // Health Check Endpoint
     @GetMapping("/health")
     fun healthCheck(): ResponseEntity<String> {
         return ResponseEntity.ok("Apex F1 AI Agent Service is in good health :)")
     }
 
-    @PostMapping("/chat")
-    fun chatWithAgent(@RequestBody request: ChatRequest): ResponseEntity<ChatResponse> {
+    @PostMapping("/chat", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    fun chatWithAgent(@RequestBody request: ChatRequest): Flux<String> {
         val activeChatId = request.chatId ?: UUID.randomUUID().toString()
         val command = ChatCommand(chatId = activeChatId, message = request.message)
-        val responseText = chatWithAgentUseCase.chat(command)
-
-        return ResponseEntity.ok(ChatResponse(activeChatId, responseText))
+        
+        return chatWithAgentUseCase.chat(command)
     }
 
     @PostMapping("/clear")

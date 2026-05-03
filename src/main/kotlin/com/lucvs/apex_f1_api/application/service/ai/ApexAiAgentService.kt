@@ -9,6 +9,8 @@ import org.springframework.ai.chat.memory.ChatMemory
 import org.springframework.ai.openai.OpenAiChatOptions
 import org.springframework.stereotype.Service
 
+import reactor.core.publisher.Flux
+
 @Service
 class ApexAiAgentService(
         chaClientBuilder: ChatClient.Builder,
@@ -18,7 +20,7 @@ class ApexAiAgentService(
 
         private val chatClient = chaClientBuilder.build()
 
-        override fun chat(command: ChatCommand): String {
+        override fun chat(command: ChatCommand): Flux<String> {
                 val systemPrompt =
                         """
                 당신은 Formula 1 데이터 및 규정 전문가인 Apex-AI입니다.
@@ -93,12 +95,11 @@ class ApexAiAgentService(
                                                 "getMyMembershipTool",
                                                 "purchaseGoodsTool",
                                                 "requestMembershipPaymentTool"
-                                        )
+                                         )
                                         .build()
                         )
-                        .call()
+                        .stream()
                         .content()
-                        ?: "죄송합니다. 요청을 처리하는 중에 오류가 발생했습니다."
         }
 
         override fun clear(chatId: String) {
