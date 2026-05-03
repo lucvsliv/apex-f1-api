@@ -24,8 +24,16 @@ class ApexActionToolProvider(
 
     private fun getCurrentUserId(): Long {
         val authentication = SecurityContextHolder.getContext().authentication
-        return authentication?.name?.toLong()
-                ?: throw IllegalStateException("User not authenticated")
+        log.info("[DEBUG] getCurrentUserId: authentication={}, name={}", 
+                 authentication?.javaClass?.simpleName, authentication?.name)
+        
+        if (authentication == null || authentication.name == "anonymousUser") {
+            log.error("[DEBUG] User not authenticated or anonymous")
+            throw IllegalStateException("User not authenticated")
+        }
+        
+        return authentication.name.toLongOrNull()
+                ?: throw IllegalStateException("Invalid user ID in authentication: ${authentication.name}")
     }
 
     // 1. 게시글 작성 툴

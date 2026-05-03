@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 
+import org.slf4j.LoggerFactory
+
 @Component
 class AiRateLimitInterceptor(
     private val rateLimitPort: RateLimitPort,
@@ -18,17 +20,30 @@ class AiRateLimitInterceptor(
     private val objectMapper: ObjectMapper
 ) : HandlerInterceptor {
 
-    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val auth = SecurityContextHolder.getContext().authentication
+    private val log = LoggerFactory.getLogger(javaClass)
 
-        if (auth == null || !auth.isAuthenticated) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "인증되지 않은 사용자입니다.")
+    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        // SSE 비동기 요청 시 인터셉터 중복 실행 방지
+        if (request.dispatcherType == jakarta.servlet.DispatcherType.ASYNC) {
+            return true
+        }
+
+        val auth = SecurityContextHolder.getContext().authentication
+        log.debug("AiRateLimitInterceptor: auth={}, name={}, authenticated={}", auth?.javaClass?.simpleName, auth?.name, auth?.isAuthenticated)
+
+        if (auth == null || !auth.isAuthenticated || auth.name == "anonymousUser") {
+            log.warn("AiRateLimitInterceptor: 인증되지 않은 접근 거부. name={}", auth?.name)
+            if (!response.isCommitted) {
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "인증되지 않은 사용자입니다.")
+            }
             return false
         }
 
         val userId = auth.name.toLongOrNull()
             ?: run {
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), "잘못된 사용자 정보입니다.")
+                if (!response.isCommitted) {
+                    response.sendError(HttpStatus.UNAUTHORIZED.value(), "잘못된 사용자 정보입니다.")
+                }
                 return false
             }
 

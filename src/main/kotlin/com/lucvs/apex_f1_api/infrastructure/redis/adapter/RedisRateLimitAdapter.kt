@@ -30,7 +30,7 @@ class RedisRateLimitAdapter(
     private val ipBucketConfiguration = BucketConfiguration.builder()
             .addLimit(
                 Bandwidth.builder()
-                    .capacity(30)
+                    .capacity(50)
                     .refillIntervally(30, Duration.ofMinutes(1))
                     .build()
             )

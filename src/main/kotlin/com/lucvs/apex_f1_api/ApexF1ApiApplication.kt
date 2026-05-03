@@ -11,5 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 class ApexF1ApiApplication
 
 fun main(args: Array<String>) {
-	runApplication<ApexF1ApiApplication>(*args)
+    // 비동기 스레드 간 SecurityContext 전파를 위해 시스템 프로퍼티 설정 (가장 이른 시점)
+    System.setProperty("spring.security.strategy", "MODE_INHERITABLETHREADLOCAL")
+    runApplication<ApexF1ApiApplication>(*args)
 }
