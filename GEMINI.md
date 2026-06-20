@@ -8,7 +8,7 @@ Apex-F1은 F1(Formula 1) 데이터를 실시간으로 동기화하고, LLM 기�
 * Framework: Spring Boot (3.x)
 * Architecture: Hexagonal Architecture (Ports and Adapters)
 * AI: Spring AI, Vector Search, RAG (Retrieval-Augmented Generation)
-* Data: Kafka (Events), Redis (Queue/Rate Limit), JPA (Persistence), SSE (Notification)
+* Data: Redis (Queue/Rate Limit), JPA (Persistence), SSE (Notification)
 * Payment: Toss Payments
 
 ---
@@ -21,7 +21,7 @@ Apex-F1은 F1(Formula 1) 데이터를 실시간으로 동기화하고, LLM 기�
 * application/port/out: 시스템에서 외부(DB, API, AI)로 나가는 통로 (Port 인터페이스)
 * application/service: UseCase를 구현하는 순수 비즈니스 로직 계층
 * domain/model: 핵심 비즈니스 엔티티 및 도메인 객체 (Framework-agnostic)
-* infrastructure: 외부 기술(Redis, Kafka, JPA, Spring AI)의 구체적인 구현체 (Adapter)
+* infrastructure: 외부 기술(Redis, JPA, Spring AI)의 구체적인 구현체 (Adapter)
 
 ### 2. Key Modules and Responsibilities
 * AI Agent (service/ai, infrastructure/ai)
