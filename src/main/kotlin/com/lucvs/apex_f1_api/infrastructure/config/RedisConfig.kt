@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.bucket4j.distributed.proxy.ProxyManager
+import io.github.bucket4j.distributed.ExpirationAfterWriteStrategy
 import io.github.bucket4j.redis.lettuce.cas.LettuceBasedProxyManager
 import io.lettuce.core.RedisClient
 import org.springframework.beans.factory.annotation.Value
@@ -35,7 +36,9 @@ class RedisConfig(
     // 2. bucket4j-redis 연결 bean 등록
     @Bean
     fun bucket4jProxyManager(redisClient: RedisClient): ProxyManager<ByteArray> {
-        return LettuceBasedProxyManager.builderFor(redisClient).build()
+        return LettuceBasedProxyManager.builderFor(redisClient)
+            .withExpirationStrategy(ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(Duration.ofMinutes(10)))
+            .build()
     }
 
     // 3. Data Caching

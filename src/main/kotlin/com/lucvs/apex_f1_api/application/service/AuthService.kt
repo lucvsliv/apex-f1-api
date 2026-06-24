@@ -132,6 +132,10 @@ class AuthService(
      * 이메일 OTP 전송
      */
     override fun sendOtp(email: String) {
+        if (loadUserPort.existsByEmail(email)) {
+            throw IllegalArgumentException("이미 가입된 이메일입니다.")
+        }
+
         // 6자리 난수 생성
         val otp = (100000..999999).random().toString()
         

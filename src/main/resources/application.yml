@@ -11,7 +11,7 @@ spring:
   datasource:
     # 1. 메인 비즈니스
     main:
-      jdbc-url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+      jdbc-url: jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB}
       username: ${MAIN_POSTGRES_USERNAME}
       password: ${MAIN_POSTGRES_PASSWORD}
       driver-class-name: org.postgresql.Driver
@@ -21,7 +21,7 @@ spring:
 
     # 2. ApexAI 전용 Read-Only DataSource
     apexai-readonly:
-      jdbc-url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+      jdbc-url: jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB}
       username: ${APEXAI_POSTGRES_USERNAME}
       password: ${APEXAI_POSTGRES_PASSWORD}
       driver-class-name: org.postgresql.Driver

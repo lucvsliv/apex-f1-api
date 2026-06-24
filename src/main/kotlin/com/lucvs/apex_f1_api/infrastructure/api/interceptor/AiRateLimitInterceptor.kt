@@ -64,14 +64,21 @@ class AiRateLimitInterceptor(
 
             val errorMessage = when (status) {
                 RateLimitStatus.IP_LIMIT_EXCEEDED -> "해당 IP에서 허용된 분당 AI 요청 횟수를 초과하였습니다. 잠시 후 다시 시도해 주세요."
-                RateLimitStatus.USER_LIMIT_EXCEEDED -> "일일 질문 가능 횟수를 모두 소진하였습니다. 더 많은 사용을 위하여 멤버십을 업그레이드해 보세요!"
+                RateLimitStatus.USER_LIMIT_EXCEEDED -> "1시간 질문 가능 횟수를 모두 소진하였습니다. 더 많은 사용을 위하여 멤버십을 업그레이드해 보세요!"
                 else -> "요청 횟수를 초과하였습니다."
             }
 
-            val errorResponse = mapOf(
+            val errorResponse = mutableMapOf<String, Any>(
                 "error" to "TOO_MANY_REQUESTS",
                 "message" to errorMessage
             )
+
+            if (status == RateLimitStatus.USER_LIMIT_EXCEEDED) {
+                val now = java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"))
+                val nextHour = now.truncatedTo(java.time.temporal.ChronoUnit.HOURS).plusHours(1)
+                errorResponse["remainingSeconds"] = java.time.Duration.between(now, nextHour).seconds
+            }
+
             response.writer.write(objectMapper.writeValueAsString(errorResponse))
             return false
         }
