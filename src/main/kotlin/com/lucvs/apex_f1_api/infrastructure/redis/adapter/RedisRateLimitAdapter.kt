@@ -44,6 +44,9 @@ class RedisRateLimitAdapter(private val proxyManager: ProxyManager<ByteArray>) :
             return RateLimitStatus.ALLOWED
         }
 
+        val currentHour = java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"))
+            .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH"))
+
         // 1. IP 버킷 검사
         val ipKey = "rate_limit:ai_agent_ip:$clientIp".toByteArray()
         val ipBucket = proxyManager.builder().build(ipKey) { ipBucketConfiguration }
@@ -52,8 +55,8 @@ class RedisRateLimitAdapter(private val proxyManager: ProxyManager<ByteArray>) :
             return RateLimitStatus.IP_LIMIT_EXCEEDED
         } // 해당 IP 분당 사용량 초과
 
-        // 2. 사용자 버킷 검사
-        val userKey = "rate_limit:ai_agent_user:$userId".toByteArray()
+        // 2. 사용자 버킷 검사 (시간별로 키를 분리하여 정각에 완벽히 리셋되도록 보장)
+        val userKey = "rate_limit:ai_agent_user:${userId}_$currentHour".toByteArray()
         val userConfiguration = userBucketConfigurations.getValue(tier)
         val userBucket = proxyManager.builder().build(userKey) { userConfiguration }
 

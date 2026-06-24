@@ -40,8 +40,11 @@ class SecurityConfig(
                 auth
                     .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers("/error").permitAll()
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/races/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/seasons/**").permitAll()
                     .requestMatchers("/api/v1/users/**").authenticated()
                     .anyRequest().authenticated()
             }

@@ -88,6 +88,8 @@ class AuthController(
         return try {
             sendOtpUseCase.sendOtp(request.email)
             ResponseEntity.ok("인증번호가 발송되었습니다.")
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)
         } catch (e: Exception) {
             logger.error("이메일 발송 실패: email={}", request.email, e)
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일 발송에 실패했습니다.")

@@ -32,7 +32,7 @@ class AgentController(
     @PostMapping("/chat", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun chatWithAgent(@RequestBody request: ChatRequest): Flux<String> {
         val activeChatId = request.chatId ?: UUID.randomUUID().toString()
-        val command = ChatCommand(chatId = activeChatId, message = request.message)
+        val command = ChatCommand(chatId = activeChatId, agentId = request.agentId ?: "dodo", message = request.message)
         
         return chatWithAgentUseCase.chat(command)
     }
